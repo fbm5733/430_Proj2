@@ -2,7 +2,7 @@
   "name": "Logins",
   "version": "1.0.0",
   "engines": {
-    "node": "12.16.0",
+    "node": "14.15.4",
     "npm": "6.13.7"
   },
   "description": "A Simple Login Example using Node.js, Mongo and Redis",
@@ -10,7 +10,7 @@
   "scripts": {
     "build": "babel ./client --out-file ./hosted/bundle.js",
     "watch": "babel --watch ./client --out-file ./hosted/bundle.js",
-    "nodemon": "nodemon --watch ./server ./server/app.js",
+    "nodemon": "nodemon -e js,html,css --watch ./server --watch ./hosted ./server/app.js",
     "start": "node ./server/app.js",
     "pretest": "eslint ./server --fix",
     "test": "echo \"Tests complete\""
@@ -21,16 +21,24 @@
     "Redis",
     "Login"
   ],
-  "author": "Cody Van De Mark",
-  "license": "Apache 2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fbm5733/DomoMaker-A.git"
+  },
+  "author": "Fisher Meddaugh",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/fbm5733/DomoMaker-A/issues"
+  },
+  "homepage": "https://github.com/fbm5733/DomoMaker-A#readme",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.7",
-    "@babel/preset-env": "^7.8.7",
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.13",
+    "@babel/preset-env": "^7.13.12",
     "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-plugin-import": "^2.20.1",
-    "nodemon": "^2.0.2"
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.7"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -40,11 +48,11 @@
     "csurf": "^1.11.0",
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
-    "express-session": "^1.17.0",
-    "helmet": "^3.21.3",
-    "mongoose": "^5.9.5",
+    "express-session": "^1.17.1",
+    "helmet": "^3.23.3",
+    "mongoose": "^5.12.2",
     "redis": "^3.0.2",
     "serve-favicon": "^2.5.0",
-    "underscore": "^1.9.2"
+    "underscore": "^1.12.1"
   }
 }
