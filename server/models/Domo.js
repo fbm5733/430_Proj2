@@ -30,6 +30,12 @@ const DomoSchema = new mongoose.Schema({
     ref: 'Account',
   },
 
+  // I added sharable attribute since this is a feature I may likely add to my projects
+  sharable: {
+    type: Boolean,
+    default: false,
+  },
+
   createdData: {
     type: Date,
     default: Date.now,
@@ -46,7 +52,7 @@ DomoSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return DomoModel.find(search).select('name age').lean().exec(callback);
+  return DomoModel.find(search).select('name age sharable _id').lean().exec(callback);
 };
 
 DomoModel = mongoose.model('Domo', DomoSchema);

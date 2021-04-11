@@ -18,9 +18,13 @@ const makeDomo = (req, res) => {
     return res.status(400).json({ error: 'RAWR! Both name and age are required' });
   }
 
+  // defaults to false (even though it's a checkbox it should never NOT send a value)
+  const sharable = req.body.sharable || 'false';
+
   const domoData = {
     name: req.body.name,
     age: req.body.age,
+    sharable,
     owner: req.session.account._id,
   };
 
@@ -56,6 +60,31 @@ const getDomos = (request, response) => {
   });
 };
 
+const sharedPage = (request, response) => {
+  const req = request;
+  const res = response;
+
+  // gets the ID from the parameters
+  const searchID = req.params.domoId;
+  if (!searchID) {
+    return res.render('shared', { error: 'No ID Provided' });
+  }
+
+  //
+  Domo.DomoModel.findById(req.params.domoId, (err, doc) => {
+    // if it isn't sharable or it's a bad ID then don't show it
+    if (err || !doc.sharable) {
+      console.log(err);
+      return res.render('shared', { error: 'An error occurred' });
+    }
+
+    return res.render('shared', { domos: { name: doc.name, age: doc.age } });
+  });
+
+  return false;
+};
+
 module.exports.make = makeDomo;
 module.exports.makerPage = makerPage;
 module.exports.getDomos = getDomos;
+module.exports.sharedPage = sharedPage;

@@ -26,14 +26,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fbm5733/DomoMaker-D.git"
+    "url": "git+https://github.com/fbm5733/DomoMaker-E.git"
   },
   "author": "Fisher Meddaugh",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/fbm5733/DomoMaker-D/issues"
+    "url": "https://github.com/fbm5733/DomoMaker-E/issues"
   },
-  "homepage": "https://github.com/fbm5733/DomoMaker-D=#readme",
+  "homepage": "https://github.com/fbm5733/DomoMaker-E=#readme",
   "devDependencies": {
     "@babel/cli": "^7.13.14",
     "@babel/compat-data": "^7.13.15",

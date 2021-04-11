@@ -5,6 +5,7 @@ const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
   app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('/maker/:domoId', mid.requiresSecure, mid.requiresLogin, controllers.Domo.sharedPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);

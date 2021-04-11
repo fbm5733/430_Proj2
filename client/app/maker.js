@@ -28,6 +28,8 @@ const DomoForm = (props) => {
             <input id="domoName" type="text" name="name" placeholder="Domo Name" />
             <label htmlFor="age">Age: </label>
             <input id="domoAge" type="text" name="age" placeholder="Domo Age" />
+            <label htmlFor="sharable">Sharable: </label>
+            <input id="domoSharable" type="checkbox" name="sharable" value="true" />
             <input type="hidden" name="_csrf" value={props.csrf} />
             <input className="makeDomoSubmit" type="submit" value="Make Domo" />
         </form>
@@ -44,11 +46,19 @@ const DomoList = function(props) {
     }
 
     const domoNodes = props.domos.map(function(domo) {
+        
+        // if sharable is true then it will display a button. 
+        //If it is false or doesn't exist then show a message
+        const sharableButton = domo.sharable ? 
+        (<button className="domoSharable" onClick={(e) => getShareLink(domo._id)}>Copy Share Link</button>) : 
+        (<h3 className="domoSharable"> Not Sharable </h3>);
+
         return (
             <div key={domo._id} className="domo">
                 <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
                 <h3 className="domoName"> Name: {domo.name} </h3>
                 <h3 className="domoAge"> Age: {domo.age} </h3>
+                {sharableButton}
             </div>
         );
     });
@@ -83,6 +93,25 @@ const setup = function(csrf) {
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
         setup(result.csrfToken);
+    });
+};
+
+const getShareLink = (id) => {
+
+    //get the current page link (can't use absolutes because the host may change)
+    let urlString = window.location.href;
+    //gets the first index of / to find the start of the word maker. Starts at 10 to skip over https://
+    let pageIndex = urlString.indexOf("/", 10) + 6;
+    //makes the whole URL
+    urlString = `${urlString.substring(0, pageIndex)}/${id}`;
+
+
+    //copies the share link to the clipboard
+    navigator.clipboard.writeText(urlString).then(() => {
+        //shows the success
+        alert("Link copied successfully");
+    }, () => {
+        alert("Link copy failed");
     });
 };
 

@@ -39,6 +39,13 @@ var DomoForm = function DomoForm(props) {
     type: "text",
     name: "age",
     placeholder: "Domo Age"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "sharable"
+  }, "Sharable: "), /*#__PURE__*/React.createElement("input", {
+    id: "domoSharable",
+    type: "checkbox",
+    name: "sharable",
+    value: "true"
   }), /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     name: "_csrf",
@@ -60,6 +67,16 @@ var DomoList = function DomoList(props) {
   }
 
   var domoNodes = props.domos.map(function (domo) {
+    // if sharable is true then it will display a button. 
+    //If it is false or doesn't exist then show a message
+    var sharableButton = domo.sharable ? /*#__PURE__*/React.createElement("button", {
+      className: "domoSharable",
+      onClick: function onClick(e) {
+        return getShareLink(domo._id);
+      }
+    }, "Copy Share Link") : /*#__PURE__*/React.createElement("h3", {
+      className: "domoSharable"
+    }, " Not Sharable ");
     return /*#__PURE__*/React.createElement("div", {
       key: domo._id,
       className: "domo"
@@ -71,7 +88,7 @@ var DomoList = function DomoList(props) {
       className: "domoName"
     }, " Name: ", domo.name, " "), /*#__PURE__*/React.createElement("h3", {
       className: "domoAge"
-    }, " Age: ", domo.age, " "));
+    }, " Age: ", domo.age, " "), sharableButton);
   });
   return /*#__PURE__*/React.createElement("div", {
     className: "domoList"
@@ -99,6 +116,22 @@ var setup = function setup(csrf) {
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
     setup(result.csrfToken);
+  });
+};
+
+var getShareLink = function getShareLink(id) {
+  //get the current page link (can't use absolutes because the host may change)
+  var urlString = window.location.href; //gets the first index of / to find the start of the word maker. Starts at 10 to skip over https://
+
+  var pageIndex = urlString.indexOf("/", 10) + 6; //makes the whole URL
+
+  urlString = "".concat(urlString.substring(0, pageIndex), "/").concat(id); //copies the share link to the clipboard
+
+  navigator.clipboard.writeText(urlString).then(function () {
+    //shows the success
+    alert("Link copied successfully");
+  }, function () {
+    alert("Link copy failed");
   });
 };
 

@@ -50,7 +50,7 @@ nav:nth-child(1) {
 .domoForm {
     border: 2px solid #338acc;
     height: 35px;
-    width: 700px;
+    width: 750px;
     margin-top:0px;
     padding-top:10px;
     background-color: #55acee;
@@ -251,6 +251,21 @@ h3.domoAge {
     font-weight: bold;
     padding-right: 40px;
     font-size: 1.5em;
+}
+
+h3.domoSharable, button.domoSharable {
+    float:left;
+    text-align: left;
+    width: 200px;
+    font-weight: bold;
+    padding-left: 40px;
+    font-size: 1.5em;
+}
+
+button.domoSharable {
+    font-size: 1em;
+    height: 50px;
+    margin-top: 15px;
 }
 
 .domo:first-child {
