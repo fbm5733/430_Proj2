@@ -79,7 +79,7 @@ const sharedPage = (request, response) => {
       return res.render('shared', { error: 'An error occurred' });
     }
 
-    return res.render('shared', { teams: { name: doc.name, age: doc.age } });
+    return res.render('shared', { csrfToken: req.csrfToken(), teams: { name: doc.name, members: doc.members } });
   });
 
   return false;
