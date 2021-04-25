@@ -19,12 +19,20 @@ const requiresSecure = (req, res, next) => {
   return next();
 };
 
+const requiresPremium = (req, res, next) => {
+  if(req.session.account.premium != true) {
+    return res.redirect('/maker') //redirect to a premium page later
+  }
+  return next();
+}
+
 const bypassSecure = (req, res, next) => {
   next();
 };
 
 module.exports.requiresLogin = requiresLogin;
 module.exports.requiresLogout = requiresLogout;
+module.exports.requiresPremium = requiresPremium;
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.requiresSecure = requiresSecure;
