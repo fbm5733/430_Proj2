@@ -27,18 +27,20 @@ const makeTeam = (req, res) => {
     owner: req.session.account._id,
   };
 
-  const newTeam = new Team.TeamModel(teamData);
+  //sets the id so it will save instead of making new
+  if(req.body._id) { teamData._id = req.body._id; }
 
+  //saves the team
+  const newTeam = new Team.TeamModel(teamData);
   const teamPromise = newTeam.save();
 
-  teamPromise.then(() => res.json({ redirect: '/maker' }));
+  //redirects or gives error
+  teamPromise.then(() => {
+    res.json({ redirect: '/maker' });
+  });
 
   teamPromise.catch((err) => {
     console.log(err);
-    if (err.code === 11000) {
-      return res.status(400).json({ error: 'Team already exists.' });
-    }
-
     return res.status(400).json({ error: 'An error occurred' });
   }); // catch
 
