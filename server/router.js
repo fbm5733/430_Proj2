@@ -3,14 +3,14 @@ const mid = require('./middleware');
 
 const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
-  app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
+  app.get('/getTeams', mid.requiresLogin, controllers.Team.getTeams);
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
-  app.get('/maker/:domoId', mid.requiresSecure, mid.requiresLogin, controllers.Domo.sharedPage);
+  app.get('/maker/:teamId', mid.requiresSecure, mid.requiresLogin, controllers.Team.sharedPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
-  app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);
-  app.post('/maker', mid.requiresLogin, controllers.Domo.make);
+  app.get('/maker', mid.requiresLogin, controllers.Team.makerPage);
+  app.post('/maker', mid.requiresLogin, controllers.Team.make);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 

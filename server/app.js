@@ -14,7 +14,7 @@ const csrf = require('csurf');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/DomoMaker';
+const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/TeamBuilder';
 
 // mongoose setup options
 const mongooseOptions = {
@@ -65,7 +65,7 @@ app.use(session({
   store: new RedisStore({
     client: redisClient,
   }),
-  secret: 'Domo Arigato FHIVCOODDF', // unique compared to other students
+  secret: 'Magikarp, Shuckle, Gardevoir, Hatterene, Quagsire, Latias', // my secret code is my pokemon team haha
   resave: true,
   saveUninitialized: true,
   cookie: {
