@@ -26,18 +26,18 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fbm5733/DomoMaker-E.git"
+    "url": "git+https://github.com/fbm5733/430_Proj2.git"
   },
   "author": "Fisher Meddaugh",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/fbm5733/DomoMaker-E/issues"
+    "url": "https://github.com/fbm5733/430_Proj2/issues"
   },
-  "homepage": "https://github.com/fbm5733/DomoMaker-E=#readme",
+  "homepage": "https://github.com/fbm5733/430_Proj2=#readme",
   "devDependencies": {
-    "@babel/cli": "^7.13.14",
+    "@babel/cli": "^7.13.16",
     "@babel/compat-data": "^7.13.15",
-    "@babel/core": "^7.13.15",
+    "@babel/core": "^7.13.16",
     "@babel/preset-env": "^7.13.15",
     "@babel/preset-react": "^7.13.13",
     "eslint": "^6.8.0",
@@ -55,9 +55,10 @@
     "express-handlebars": "^3.1.0",
     "express-session": "^1.17.1",
     "helmet": "^3.23.3",
-    "mongoose": "^5.12.3",
-    "redis": "^3.1.0",
+    "mongoose": "^5.12.5",
+    "redis": "^3.1.2",
     "serve-favicon": "^2.5.0",
-    "underscore": "^1.13.0"
+    "underscore": "^1.13.1",
+    "pokedex-promise-v2": "^3.3.0"
   }
 }
