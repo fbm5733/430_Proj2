@@ -6,7 +6,7 @@ const router = (app) => {
   app.get('/getTeams', mid.requiresLogin, controllers.Team.getTeams);
   app.get('/getTeamDetails', mid.requiresLogin, controllers.Team.getTeamDetails);
   app.get('/getSpeciesData', mid.requiresLogin, controllers.Team.getSpeciesData);
-  app.get('/getPokemonList', controllers.Team.getPokemonsList);
+  app.get('/speciesSearch', controllers.Team.speciesSearch);
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.get('/maker/:teamId', mid.requiresSecure, mid.requiresLogin, controllers.Team.sharedPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);

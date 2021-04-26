@@ -23,6 +23,7 @@ const makeTeam = (req, res) => {
   const sharable = req.body.sharable || 'false';
   // defaults for everything else
   const name = req.body.name || 'New Team';
+  console.log(req.body);
   const members = req.body.members || [];
 
   const teamData = {
@@ -32,11 +33,18 @@ const makeTeam = (req, res) => {
     owner: req.session.account._id,
   };
 
+  let newTeam;
+
   // sets the id so it will save instead of making new
-  if (req.body._id) { teamData._id = req.body._id; }
+  if (req.body._id) {
+    teamData._id = req.body._id;
+    newTeam = new Team.TeamModel(teamData);
+    newTeam.isNew = false; // tells mongoose this is an old thing to save
+  } else {
+    newTeam = new Team.TeamModel(teamData);
+  }
 
   // saves the team
-  const newTeam = new Team.TeamModel(teamData);
   const teamPromise = newTeam.save();
 
   // redirects or gives error
@@ -147,8 +155,8 @@ const getTeamDetails = (request, response) => {
 
 const getSpeciesData = (request, response) => {
   // get the pokemon's id and species
-  const id = request.query.id;
-  const species = request.query.species;
+  const { id } = request.query;
+  const { species } = request.query;
   // parameter is missing (includes 0 check because 0 is falsey)
   if ((!id && id !== 0) || (!species && species !== 0)) {
     return response.status(400).json({ error: 'Either id or species is not provided' });
@@ -158,8 +166,8 @@ const getSpeciesData = (request, response) => {
   const obj = { id };
 
   // newSpecies parameter is for if you need to reset all the values of the pokemon
-  if (request.params.newSpecies) {
-    obj.newSpecies = request.params.newSpecies;
+  if (request.query.newSpecies) {
+    obj.newSpecies = request.query.newSpecies;
   }
 
   // finds the species given
@@ -172,12 +180,16 @@ const getSpeciesData = (request, response) => {
       obj.data = null;
     }
     // respond
-    return res.json(obj);
+    return response.json(obj);
   });
   return null;
 };
 
-const getPokemonsList = (request, response) => {
+const speciesSearch = (request, response) => {
+  // sets the string that will be searched for in all pokemon names
+  let searchString = '';
+  if (request.query.q) searchString = decodeURIComponent(request.query.q).trim().toLowerCase();
+
   // creates respond object
   const obj = {};
 
@@ -185,7 +197,8 @@ const getPokemonsList = (request, response) => {
     if (!error) {
       // filters it out so it's just an array of every name that includes what was searched for
       obj.results = res.results
-        .map((species) => species.name);
+        .map((species) => species.name)
+        .filter((name) => name.includes(searchString));
       // .filter((name) => name.includes(searchString));
       // write response
       return response.json(obj);
@@ -227,4 +240,4 @@ module.exports.getTeams = getTeams;
 module.exports.getTeamDetails = getTeamDetails;
 module.exports.sharedPage = sharedPage;
 module.exports.getSpeciesData = getSpeciesData;
-module.exports.getPokemonsList = getPokemonsList;
+module.exports.speciesSearch = speciesSearch;
