@@ -145,6 +145,57 @@ const getTeamDetails = (request, response) => {
   return null;
 };
 
+const getSpeciesData = (request, response) => {
+  // get the pokemon's id and species
+  const { id } = request.query;
+  const { species } = request.query;
+  // parameter is missing (includes 0 check because 0 is falsey)
+  if ((!id && id !== 0) || (!species && species !== 0)) {
+    return response.status(400).json({ error: 'Either id or species is not provided' });
+  }
+
+  // starts building object to respond with
+  const obj = { id };
+
+  // newSpecies parameter is for if you need to reset all the values of the pokemon
+  if (request.params.newSpecies) {
+    obj.newSpecies = request.params.newSpecies;
+  }
+
+  // finds the species given
+  P.getPokemonByName(species, (res, error) => { // callback function
+    if (!error) {
+      // success, set the object
+      obj.data = res;
+    } else {
+      // failed, give an error
+      obj.data = null;
+    }
+    // respond
+    return res.json(obj);
+  });
+  return null;
+};
+
+const getPokemonsList = (request, response) => {
+  // creates respond object
+  const obj = {};
+
+  P.getPokemonsList({ limit: 100000, offset: 0 }, (res, error) => {
+    if (!error) {
+      // filters it out so it's just an array of every name that includes what was searched for
+      obj.results = res.results
+        .map((species) => species.name);
+      // .filter((name) => name.includes(searchString));
+      // write response
+      return response.json(obj);
+    }
+    // just act as if there were no pokemon
+    obj.results = [];
+    return response.json(obj);
+  });
+};
+
 const sharedPage = (request, response) => {
   const req = request;
   const res = response;
@@ -175,3 +226,5 @@ module.exports.makerPage = makerPage;
 module.exports.getTeams = getTeams;
 module.exports.getTeamDetails = getTeamDetails;
 module.exports.sharedPage = sharedPage;
+module.exports.getSpeciesData = getSpeciesData;
+module.exports.getPokemonsList = getPokemonsList;
