@@ -58,7 +58,7 @@ const TeamList = function(props) {
                 //gives it the image
                 memberNodes.push(
                     <div key={`${team._id} + ${i}`} className="teamMember"> 
-                        <img src={species.image} alt={species.name}/>
+                        <img width='475' src={species.image} alt={species.name}/>
                         <h3>{species.name}</h3>
                     </div>
                 );
@@ -151,6 +151,7 @@ const setupTeamCreateScreen = (obj) => {
                 let image = document.createElement("img"); 
                 image.src = species.image;
                 image.alt = species.name;
+                image.width = '475';
                 //appends the image
                 teamMember.append(image);
     
@@ -223,7 +224,8 @@ const showSpeciesData = (obj) => {
     if(obj.newSpecies && obj.newSpecies === "yes" && obj.data) {
         let newObj = {
             name: obj.data.name,
-            image: obj.data.sprites.other['official-artwork'].front_default,
+            //includes defaults for the sprites
+            image: obj.data.sprites.other['official-artwork'].front_default || obj.data.sprites.front_default || "/assets/img/transparent.gif",
             number: obj.data.id,
             abilityValue: "",
             moveValues: [],

@@ -67,6 +67,7 @@ var TeamList = function TeamList(props) {
           key: "".concat(team._id, " + ").concat(i),
           className: "teamMember"
         }, /*#__PURE__*/React.createElement("img", {
+          width: "475",
           src: species.image,
           alt: species.name
         }), /*#__PURE__*/React.createElement("h3", null, species.name)));
@@ -154,7 +155,8 @@ var setupTeamCreateScreen = function setupTeamCreateScreen(obj) {
       //gives it the image
       var image = document.createElement("img");
       image.src = species.image;
-      image.alt = species.name; //appends the image
+      image.alt = species.name;
+      image.width = '475'; //appends the image
 
       teamMember.append(image); //gives it the name header
 
@@ -228,7 +230,8 @@ var showSpeciesData = function showSpeciesData(obj) {
   if (obj.newSpecies && obj.newSpecies === "yes" && obj.data) {
     var newObj = {
       name: obj.data.name,
-      image: obj.data.sprites.other['official-artwork'].front_default,
+      //includes defaults for the sprites
+      image: obj.data.sprites.other['official-artwork'].front_default || obj.data.sprites.front_default || "/assets/img/transparent.gif",
       number: obj.data.id,
       abilityValue: "",
       moveValues: [],
