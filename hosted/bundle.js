@@ -79,7 +79,7 @@ var TeamList = function TeamList(props) {
           key: "".concat(team._id, " + ").concat(i),
           className: "teamMember"
         }, /*#__PURE__*/React.createElement("img", {
-          src: "http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif",
+          src: "/assets/img/transparent.gif",
           alt: "Empty Slot",
           width: "475"
         })));
@@ -169,7 +169,7 @@ var setupTeamCreateScreen = function setupTeamCreateScreen(obj) {
       //there isn't a pokemon in that slot of the team.
       var _image = document.createElement("img");
 
-      _image.src = "http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif";
+      _image.src = "/assets/img/transparent.gif";
       _image.alt = "Empty Slot"; //width makes sure it's the same size as the other images (which are all 475x475)
 
       _image.width = '475'; //appends
@@ -348,7 +348,7 @@ var speciesSelectFunc = function speciesSelectFunc(obj) {
         //change the image and name
         var img = document.querySelector("#m".concat(currentSpecies.id, " img"));
         var h3 = document.querySelector("#m".concat(currentSpecies.id, " h3"));
-        img.src = "/transparent.gif";
+        img.src = "/assets/img/transparent.gif";
         img.alt = "Empty Slot";
         img.width = '475';
         h3.textContent = "Empty";

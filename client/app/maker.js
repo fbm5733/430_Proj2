@@ -69,7 +69,7 @@ const TeamList = function(props) {
                 //there isn't a pokemon in that slot of the team.
                 memberNodes.push(
                     <div key={`${team._id} + ${i}`} className="teamMember"> 
-                        <img src="http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif" alt="Empty Slot" width='475'/>
+                        <img src="/assets/img/transparent.gif" alt="Empty Slot" width='475'/>
                     </div>
                 );
             }
@@ -165,7 +165,7 @@ const setupTeamCreateScreen = (obj) => {
                 //This is a very small gif file that will be used in place of a pokemon image if 
                 //there isn't a pokemon in that slot of the team.
                 let image = document.createElement("img"); 
-                image.src = "http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif";
+                image.src = "/assets/img/transparent.gif";
                 image.alt = "Empty Slot";
                 //width makes sure it's the same size as the other images (which are all 475x475)
                 image.width = '475';
@@ -356,7 +356,7 @@ const speciesSelectFunc = (obj) => {
                 //change the image and name
                 let img = document.querySelector(`#m${currentSpecies.id} img`);
                 let h3 = document.querySelector(`#m${currentSpecies.id} h3`);
-                img.src = "/transparent.gif";
+                img.src = "/assets/img/transparent.gif";
                 img.alt = "Empty Slot";
                 img.width = '475';
                 h3.textContent = "Empty";
