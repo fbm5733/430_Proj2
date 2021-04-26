@@ -64,6 +64,7 @@ var TeamList = function TeamList(props) {
       if (species && species.image) {
         //gives it the image
         memberNodes.push( /*#__PURE__*/React.createElement("div", {
+          key: "".concat(team._id, " + ").concat(i),
           className: "teamMember"
         }, /*#__PURE__*/React.createElement("img", {
           src: species.image,
@@ -75,6 +76,7 @@ var TeamList = function TeamList(props) {
         //This is a very small gif file that will be used in place of a pokemon image if 
         //there isn't a pokemon in that slot of the team.
         memberNodes.push( /*#__PURE__*/React.createElement("div", {
+          key: "".concat(team._id, " + ").concat(i),
           className: "teamMember"
         }, /*#__PURE__*/React.createElement("img", {
           src: "http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif",

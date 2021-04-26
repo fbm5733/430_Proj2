@@ -57,7 +57,7 @@ const TeamList = function(props) {
             if(species && species.image) {
                 //gives it the image
                 memberNodes.push(
-                    <div className="teamMember"> 
+                    <div key={`${team._id} + ${i}`} className="teamMember"> 
                         <img src={species.image} alt={species.name}/>
                         <h3>{species.name}</h3>
                     </div>
@@ -68,7 +68,7 @@ const TeamList = function(props) {
                 //This is a very small gif file that will be used in place of a pokemon image if 
                 //there isn't a pokemon in that slot of the team.
                 memberNodes.push(
-                    <div className="teamMember"> 
+                    <div key={`${team._id} + ${i}`} className="teamMember"> 
                         <img src="http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif" alt="Empty Slot" width='475'/>
                     </div>
                 );
