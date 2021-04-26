@@ -1,93 +1,129 @@
-const handleDomo = (e) => {
+let currentTeam = {};
+let currentSpecies = {};
+
+const handleTeam = (e) => {
     e.preventDefault();
 
-    $("#domoMessage").animate({width:'hide'},350);
+    $("#teamMessage").animate({width:'hide'},350);
 
-    if($("#domoName").val() == '' || $("#domoAge").val() == ''){
+    if($("#teamName").val() == '' || $("#teamAge").val() == ''){
         handleError("RAWR! All fields are required");
         return false;
     }
     
-    sendAjax( 'POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
-        loadDomosFromServer();
+    sendAjax( 'POST', $("#teamForm").attr("action"), $("#teamForm").serialize(), function() {
+        loadTeamsFromServer();
     });
 
     return false;
 };
 
-const DomoForm = (props) => {
+const TeamForm = (props) => {
     return (
-        <form id="domoForm"
-                onSubmit={handleDomo}
-                name="domoForm"
+        <form id="teamForm"
+                onSubmit={handleTeam}
+                name="teamForm"
                 action="/maker"
                 method="POST"
-                className="domoForm"
+                className="teamForm"
             >
             <label htmlFor="name">Name: </label>
-            <input id="domoName" type="text" name="name" placeholder="Domo Name" />
-            <label htmlFor="age">Age: </label>
-            <input id="domoAge" type="text" name="age" placeholder="Domo Age" />
-            <label htmlFor="sharable">Sharable: </label>
-            <input id="domoSharable" type="checkbox" name="sharable" value="true" />
+            <input id="teamName" type="text" name="name" placeholder="Team Name" />
             <input type="hidden" name="_csrf" value={props.csrf} />
-            <input className="makeDomoSubmit" type="submit" value="Make Domo" />
+            <input className="makeTeamSubmit" type="submit" value="New Team" />
         </form>
     );
 };
     
-const DomoList = function(props) {
-    if(props.domos.length === 0) {
+const TeamList = function(props) {
+    if(props.teams.length === 0) {
         return (
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos yet</h3>
+            <div className="teamList">
+                <h3 className="emptyTeam">No Teams yet</h3>
             </div>
         );
     }
 
-    const domoNodes = props.domos.map(function(domo) {
-        
-        // if sharable is true then it will display a button. 
-        //If it is false or doesn't exist then show a message
-        const sharableButton = domo.sharable ? 
-        (<button className="domoSharable" onClick={(e) => getShareLink(domo._id)}>Copy Share Link</button>) : 
-        (<h3 className="domoSharable"> Not Sharable </h3>);
+    const teamNodes = props.teams.map(function(team) {
+
+        const memberNodes = [];
+
+        //iterates 6 times, once each possible team member
+        //ones that don't exist will have an empty member created
+        for(let i = 0; i < 6; i++) {
+            //get the team member from the object
+            let species = team.members[i];
+
+            //creates the team member
+            let teamMember = document.createElement("div");
+            teamMember.className = "teamMember";
+
+            //if it exists then add it, if not make an empty spot
+            if(species && species.image) {
+                //gives it the image
+                memberNodes.push(
+                    <div className="teamMember"> 
+                        <img src={species.image} alt={species.name}/>
+                        <h3>{species.name}</h3>
+                    </div>
+                );
+            } else {
+                // http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif
+                // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
+                //This is a very small gif file that will be used in place of a pokemon image if 
+                //there isn't a pokemon in that slot of the team.
+                memberNodes.push(
+                    <div className="teamMember"> 
+                        <img src="http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif" alt="Empty Slot" width='475'/>
+                        <h3>{species.name}</h3>
+                    </div>
+                );
+            }
+        }
 
         return (
-            <div key={domo._id} className="domo">
-                <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 className="domoName"> Name: {domo.name} </h3>
-                <h3 className="domoAge"> Age: {domo.age} </h3>
-                {sharableButton}
+            <div key={team._id} id={`t${team._id}`} className="team" onClick = {() => { sendAjax('GET', `/getTeam?_id=${team._id}`, null, setupTeamCreateScreen); }}>
+                <h2 className="teamName"> {team.name} </h2>
+                <div className="innerTeam"> {memberNodes} </div>
             </div>
         );
     });
 
     return (
-        <div className="domoList">
-            {domoNodes}
+        <div className="teamList">
+            {teamNodes}
         </div>
     );
 };
+
+const TeamCreateScreen = function(props) {
+
+}
+
+const setupTeamCreateScreen = (data) => {
+    ReactDOM.render(
+        <TeamCreateScreen team={data} />, document.querySelector("#teams")
+    );
+}
     
-const loadDomosFromServer = () => {
-    sendAjax('GET', '/getDomos', null, (data) => {
+const loadTeamsFromServer = () => {
+    sendAjax('GET', '/getTeams', null, (data) => {
         ReactDOM.render(
-            <DomoList domos={data.domos} />, document.querySelector("#domos")
+            <TeamList teams={data.teams} />, document.querySelector("#teams")
         );
     });
 };
 
 const setup = function(csrf) {
     ReactDOM.render(
-        <DomoForm csrf={csrf} />, document.querySelector("#makeDomo")
+        <TeamForm csrf={csrf} />, document.querySelector("#makeTeam")
     );
 
     ReactDOM.render(
-        <DomoList domos={[]} />, document.querySelector("#domos")
+        <TeamList teams={[]} />, document.querySelector("#teams")
     );
 
-    loadDomosFromServer();
+    loadTeamsFromServer();
 };
 
 const getToken = () => {
@@ -96,6 +132,7 @@ const getToken = () => {
     });
 };
 
+//NOT USED YET, TO SEE A WORKING VERSION YOU CAN LOOK AT HOW I DID IT IN DOMOMAKER-E
 const getShareLink = (id) => {
 
     //get the current page link (can't use absolutes because the host may change)

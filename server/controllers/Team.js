@@ -147,8 +147,8 @@ const getTeamDetails = (request, response) => {
 
 const getSpeciesData = (request, response) => {
   // get the pokemon's id and species
-  const { id } = request.query;
-  const { species } = request.query;
+  const id = request.query.id;
+  const species = request.query.species;
   // parameter is missing (includes 0 check because 0 is falsey)
   if ((!id && id !== 0) || (!species && species !== 0)) {
     return response.status(400).json({ error: 'Either id or species is not provided' });

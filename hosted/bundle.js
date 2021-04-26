@@ -1,123 +1,144 @@
 "use strict";
 
-var handleDomo = function handleDomo(e) {
+var currentTeam = {};
+var currentSpecies = {};
+
+var handleTeam = function handleTeam(e) {
   e.preventDefault();
-  $("#domoMessage").animate({
+  $("#teamMessage").animate({
     width: 'hide'
   }, 350);
 
-  if ($("#domoName").val() == '' || $("#domoAge").val() == '') {
+  if ($("#teamName").val() == '' || $("#teamAge").val() == '') {
     handleError("RAWR! All fields are required");
     return false;
   }
 
-  sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
-    loadDomosFromServer();
+  sendAjax('POST', $("#teamForm").attr("action"), $("#teamForm").serialize(), function () {
+    loadTeamsFromServer();
   });
   return false;
 };
 
-var DomoForm = function DomoForm(props) {
+var TeamForm = function TeamForm(props) {
   return /*#__PURE__*/React.createElement("form", {
-    id: "domoForm",
-    onSubmit: handleDomo,
-    name: "domoForm",
+    id: "teamForm",
+    onSubmit: handleTeam,
+    name: "teamForm",
     action: "/maker",
     method: "POST",
-    className: "domoForm"
+    className: "teamForm"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "name"
   }, "Name: "), /*#__PURE__*/React.createElement("input", {
-    id: "domoName",
+    id: "teamName",
     type: "text",
     name: "name",
-    placeholder: "Domo Name"
-  }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "age"
-  }, "Age: "), /*#__PURE__*/React.createElement("input", {
-    id: "domoAge",
-    type: "text",
-    name: "age",
-    placeholder: "Domo Age"
-  }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "sharable"
-  }, "Sharable: "), /*#__PURE__*/React.createElement("input", {
-    id: "domoSharable",
-    type: "checkbox",
-    name: "sharable",
-    value: "true"
+    placeholder: "Team Name"
   }), /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     name: "_csrf",
     value: props.csrf
   }), /*#__PURE__*/React.createElement("input", {
-    className: "makeDomoSubmit",
+    className: "makeTeamSubmit",
     type: "submit",
-    value: "Make Domo"
+    value: "New Team"
   }));
 };
 
-var DomoList = function DomoList(props) {
-  if (props.domos.length === 0) {
+var TeamList = function TeamList(props) {
+  if (props.teams.length === 0) {
     return /*#__PURE__*/React.createElement("div", {
-      className: "domoList"
+      className: "teamList"
     }, /*#__PURE__*/React.createElement("h3", {
-      className: "emptyDomo"
-    }, "No Domos yet"));
+      className: "emptyTeam"
+    }, "No Teams yet"));
   }
 
-  var domoNodes = props.domos.map(function (domo) {
-    // if sharable is true then it will display a button. 
-    //If it is false or doesn't exist then show a message
-    var sharableButton = domo.sharable ? /*#__PURE__*/React.createElement("button", {
-      className: "domoSharable",
-      onClick: function onClick(e) {
-        return getShareLink(domo._id);
+  var teamNodes = props.teams.map(function (team) {
+    var memberNodes = []; //iterates 6 times, once each possible team member
+    //ones that don't exist will have an empty member created
+
+    for (var i = 0; i < 6; i++) {
+      //get the team member from the object
+      var species = team.members[i]; //creates the team member
+
+      var teamMember = document.createElement("div");
+      teamMember.className = "teamMember"; //if it exists then add it, if not make an empty spot
+
+      if (species && species.image) {
+        //gives it the image
+        memberNodes.push( /*#__PURE__*/React.createElement("div", {
+          className: "teamMember"
+        }, /*#__PURE__*/React.createElement("img", {
+          src: species.image,
+          alt: species.name
+        }), /*#__PURE__*/React.createElement("h3", null, species.name)));
+      } else {
+        // http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif
+        // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
+        //This is a very small gif file that will be used in place of a pokemon image if 
+        //there isn't a pokemon in that slot of the team.
+        memberNodes.push( /*#__PURE__*/React.createElement("div", {
+          className: "teamMember"
+        }, /*#__PURE__*/React.createElement("img", {
+          src: "http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif",
+          alt: "Empty Slot",
+          width: "475"
+        }), /*#__PURE__*/React.createElement("h3", null, species.name)));
       }
-    }, "Copy Share Link") : /*#__PURE__*/React.createElement("h3", {
-      className: "domoSharable"
-    }, " Not Sharable ");
+    }
+
     return /*#__PURE__*/React.createElement("div", {
-      key: domo._id,
-      className: "domo"
-    }, /*#__PURE__*/React.createElement("img", {
-      src: "/assets/img/domoface.jpeg",
-      alt: "domo face",
-      className: "domoFace"
-    }), /*#__PURE__*/React.createElement("h3", {
-      className: "domoName"
-    }, " Name: ", domo.name, " "), /*#__PURE__*/React.createElement("h3", {
-      className: "domoAge"
-    }, " Age: ", domo.age, " "), sharableButton);
+      key: team._id,
+      id: "t".concat(team._id),
+      className: "team",
+      onClick: function onClick() {
+        sendAjax('GET', "/getTeam?_id=".concat(team._id), null, setupTeamCreateScreen);
+      }
+    }, /*#__PURE__*/React.createElement("h2", {
+      className: "teamName"
+    }, " ", team.name, " "), /*#__PURE__*/React.createElement("div", {
+      className: "innerTeam"
+    }, " ", memberNodes, " "));
   });
   return /*#__PURE__*/React.createElement("div", {
-    className: "domoList"
-  }, domoNodes);
+    className: "teamList"
+  }, teamNodes);
 };
 
-var loadDomosFromServer = function loadDomosFromServer() {
-  sendAjax('GET', '/getDomos', null, function (data) {
-    ReactDOM.render( /*#__PURE__*/React.createElement(DomoList, {
-      domos: data.domos
-    }), document.querySelector("#domos"));
+var TeamCreateScreen = function TeamCreateScreen(props) {};
+
+var setupTeamCreateScreen = function setupTeamCreateScreen(data) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(TeamCreateScreen, {
+    team: data
+  }), document.querySelector("#teams"));
+};
+
+var loadTeamsFromServer = function loadTeamsFromServer() {
+  sendAjax('GET', '/getTeams', null, function (data) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(TeamList, {
+      teams: data.teams
+    }), document.querySelector("#teams"));
   });
 };
 
 var setup = function setup(csrf) {
-  ReactDOM.render( /*#__PURE__*/React.createElement(DomoForm, {
+  ReactDOM.render( /*#__PURE__*/React.createElement(TeamForm, {
     csrf: csrf
-  }), document.querySelector("#makeDomo"));
-  ReactDOM.render( /*#__PURE__*/React.createElement(DomoList, {
-    domos: []
-  }), document.querySelector("#domos"));
-  loadDomosFromServer();
+  }), document.querySelector("#makeTeam"));
+  ReactDOM.render( /*#__PURE__*/React.createElement(TeamList, {
+    teams: []
+  }), document.querySelector("#teams"));
+  loadTeamsFromServer();
 };
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
     setup(result.csrfToken);
   });
-};
+}; //NOT USED YET, TO SEE A WORKING VERSION YOU CAN LOOK AT HOW I DID IT IN DOMOMAKER-E
+
 
 var getShareLink = function getShareLink(id) {
   //get the current page link (can't use absolutes because the host may change)
@@ -142,13 +163,13 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#domoMessage").animate({
+  $("#teamMessage").animate({
     width: 'toggle'
   }, 350);
 };
 
 var redirect = function redirect(response) {
-  $("#domoMessage").animate({
+  $("#teamMessage").animate({
     width: 'hide'
   }, 350);
   window.location = response.redirect;
