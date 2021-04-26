@@ -20,11 +20,11 @@ const requiresSecure = (req, res, next) => {
 };
 
 const requiresPremium = (req, res, next) => {
-  if(req.session.account.premium != true) {
-    return res.redirect('/maker') //redirect to a premium page later
+  if (req.session.account.premium !== true && req.session.account.premium !== 'true') {
+    return res.redirect('/maker'); // redirect to a premium page later
   }
   return next();
-}
+};
 
 const bypassSecure = (req, res, next) => {
   next();

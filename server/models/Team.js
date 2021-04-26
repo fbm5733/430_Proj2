@@ -18,13 +18,13 @@ const TeamSchema = new mongoose.Schema({
     set: setName,
   },
 
-  //array of team members being saved
+  // array of team members being saved
   members: [{
     name: {
       type: String,
       required: true,
       trim: true,
-    }, 
+    },
     image: {
       type: String,
       required: true,
@@ -38,7 +38,7 @@ const TeamSchema = new mongoose.Schema({
       type: Number,
       default: 0,
     },
-    moves: [Number]
+    moves: [Number],
   }],
 
   owner: {
