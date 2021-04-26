@@ -1,11 +1,11 @@
 {
-  "name": "Logins",
+  "name": "PokeApp",
   "version": "1.0.0",
   "engines": {
     "node": "14.15.4",
     "npm": "6.13.7"
   },
-  "description": "A Simple Login Example using Node.js, Mongo and Redis",
+  "description": "An app using the Pokedex dependency to make a team builder",
   "main": "./server/app.js",
   "scripts": {
     "buildLoginBundle": "babel ./client/login ./client/helper --presets @babel/preset-react --out-file ./hosted/loginBundle.js",
