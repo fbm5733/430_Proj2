@@ -21,6 +21,7 @@ const mongooseOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
+  useFindAndModify: false,
 };
 
 mongoose.connect(dbURL, mongooseOptions, (err) => {

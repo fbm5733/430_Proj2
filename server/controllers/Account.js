@@ -6,6 +6,10 @@ const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+const settingsPage = (req, res) => {
+  res.render('settings');
+};
+
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
@@ -79,18 +83,63 @@ const signup = (request, response) => {
   }); // generateHash
 }; // signup
 
+const changePassword = (request, response) => {
+  const req = request;
+  const res = response;
+
+  // force cast to strings to cover some security flaws
+  const username = `${req.body.username}`;
+  const password = `${req.body.pass}`;
+  const newPass = `${req.body.pass2}`;
+
+  if (!username || !password || !newPass) {
+    return res.status(400).json({ error: 'RAWR! All fields are required' });
+  } // if
+
+  return Account.AccountModel.authenticate(username, password, (err, account) => {
+    // checks for an error, if it doesn't exist, or it isn't this user
+    if (err || !account || (account._id !== req.session.account._id && `${account._id}` !== req.session.account._id)) {
+      console.log(account);
+      console.log(req.session.account);
+      return res.status(401).json({ error: 'Wrong username or password' });
+    }
+
+    // generate hash for the new password
+    return Account.AccountModel.generateHash(newPass, (salt, hash) => {
+      const accountData = {
+        salt,
+        password: hash,
+      };
+
+      // makes this one sharable, then responds with the ID again
+      Account.AccountModel.findByIdAndUpdate(account._id,
+        { $set: accountData },
+        { new: true },
+        (error) => {
+          if (error) {
+            return response.status(400).json({ error: 'An error occurred updating password' });
+          }
+          return res.json({ redirect: '/logout' });
+        }); // uddate
+    }); // generateHash
+  }); // authenticate
+};
+
 const getToken = (request, response) => {
   const req = request;
   const res = response;
 
   const csrfJSON = {
     csrfToken: req.csrfToken(),
+    premium: req.session.account ? req.session.account.premium : 'false',
   };
 
   res.json(csrfJSON);
 };
 
 module.exports.loginPage = loginPage;
+module.exports.settingsPage = settingsPage;
+module.exports.passwordChange = changePassword;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;

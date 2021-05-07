@@ -204,9 +204,9 @@ const makeSharable = (request, response) => {
   const searchID = request.params.teamID;
 
   // makes this one sharable, then responds with the ID again
-  Team.TeamModel.findOneAndUpdate({ _id: searchID },
+  Team.TeamModel.findByIdAndUpdate(searchID,
     { $set: { sharable: true } },
-    { upsert: true, new: true },
+    { new: true },
     (err) => {
       if (err) {
         response.status(400).json({ error: 'Bad Team ID' });

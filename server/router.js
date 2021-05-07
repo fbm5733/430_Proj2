@@ -13,6 +13,8 @@ const router = (app) => {
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
+  app.get('/settings', mid.requiresLogin, controllers.Account.settingsPage);
+  app.post('/passwordChange', mid.requiresSecure, mid.requiresLogin, controllers.Account.passwordChange);
   app.get('/maker', mid.requiresLogin, controllers.Team.makerPage);
   app.post('/maker', mid.requiresLogin, mid.requiresPremiumConditional, controllers.Team.make);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
