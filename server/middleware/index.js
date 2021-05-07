@@ -22,9 +22,27 @@ const requiresSecure = (req, res, next) => {
 const requiresPremium = (req, res, next) => {
   if (req.session.account.premium !== true && req.session.account.premium !== 'true') {
     return res.redirect('/maker'); // redirect to a premium page later
-  }
+  } 
   return next();
 };
+
+const requiresPremiumConditional = (req, res, next) => {
+  //check if premium, and if this is a new Team
+  if (req.session.account.premium !== true && req.session.account.premium !== 'true' && req.body.new === 'true') {
+    //finds how many teams the user has
+    Team.TeamModel.findByOwner(req.session.account._id, (err, docs) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occurred' });
+      //if the user has 5 or more teams, cannot make more
+      } else if(docs.length >= 5) {
+        return res.redirect('/maker'); // redirect to a premium page later
+      }
+      //just fall through to the next() call
+    });
+  }
+  return next();
+}
 
 const bypassSecure = (req, res, next) => {
   next();
@@ -33,6 +51,7 @@ const bypassSecure = (req, res, next) => {
 module.exports.requiresLogin = requiresLogin;
 module.exports.requiresLogout = requiresLogout;
 module.exports.requiresPremium = requiresPremium;
+module.exports.requiresPremiumConditional = requiresPremiumConditional;
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.requiresSecure = requiresSecure;

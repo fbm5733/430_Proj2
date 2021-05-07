@@ -2,16 +2,13 @@ let currentTeam = {};
 let currentSpecies = {};
 let detailsRef;
 
-const handleTeam = (e) => {
-    e.preventDefault();
-
+//makes a new team
+const newTeam = (e) => {
     $("#teamMessage").animate({width:'hide'},350);
     
-    sendAjax( 'POST', $("#teamForm").attr("action"), $("#teamForm").serialize(), function() {
+    sendAjax( 'POST', '/maker', { new: "true", name: "New Team", _csrf: document.querySelector('#csrf').value }, function() {
         loadTeamsFromServer();
     });
-
-    return false;
 };
 
 //the form is not a form anymore, just a hidden csrf

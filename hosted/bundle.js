@@ -24,17 +24,19 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 var currentTeam = {};
 var currentSpecies = {};
-var detailsRef;
+var detailsRef; //makes a new team
 
-var handleTeam = function handleTeam(e) {
-  e.preventDefault();
+var newTeam = function newTeam(e) {
   $("#teamMessage").animate({
     width: 'hide'
   }, 350);
-  sendAjax('POST', $("#teamForm").attr("action"), $("#teamForm").serialize(), function () {
+  sendAjax('POST', '/maker', {
+    "new": "true",
+    name: "New Team",
+    _csrf: document.querySelector('#csrf').value
+  }, function () {
     loadTeamsFromServer();
   });
-  return false;
 }; //the form is not a form anymore, just a hidden csrf
 
 
