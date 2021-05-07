@@ -37,9 +37,9 @@ const makeTeam = (req, res) => {
   // saves the team
   const teamPromise = newTeam.save();
 
-  // redirects or gives error
+  // send back empty json
   teamPromise.then(() => {
-    res.json({ redirect: '/maker' });
+    res.json({});
   });
 
   teamPromise.catch((err) => {

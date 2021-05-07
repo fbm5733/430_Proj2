@@ -34,7 +34,9 @@ var newTeam = function newTeam(e) {
     "new": "true",
     name: "New Team",
     _csrf: document.querySelector('#csrf').value
-  }, function () {
+  }, function (data) {
+    //checks if you need to redirect
+    if (data.redirect) redirect(data);
     loadTeamsFromServer();
   });
 }; //the form is not a form anymore, just a hidden csrf
@@ -47,6 +49,14 @@ var TeamForm = function TeamForm(props) {
     name: "_csrf",
     value: props.csrf
   });
+}; //button for making a new team
+
+
+var NewTeamButton = function NewTeamButton(props) {
+  return /*#__PURE__*/React.createElement("button", {
+    className: "newTeam",
+    onClick: newTeam
+  }, "+");
 }; //create the inital list of all the teams, with all 6 members of each displayed
 
 
@@ -56,7 +66,7 @@ var TeamList = function TeamList(props) {
       className: "teamList"
     }, /*#__PURE__*/React.createElement("h3", {
       className: "emptyTeam"
-    }, "No Teams yet"));
+    }, "No Teams yet"), /*#__PURE__*/React.createElement(NewTeamButton, null));
   }
 
   var teamNodes = props.teams.map(function (team) {
@@ -89,9 +99,9 @@ var TeamList = function TeamList(props) {
       className: "innerTeam"
     }, memberNodes));
   });
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(NewTeamButton, null), /*#__PURE__*/React.createElement("div", {
     className: "teamList"
-  }, teamNodes);
+  }, teamNodes), /*#__PURE__*/React.createElement(NewTeamButton, null));
 };
 
 var SpeciesImageName = /*#__PURE__*/function (_React$Component) {
@@ -845,6 +855,7 @@ var sendAjax = function sendAjax(type, action, data, success) {
     dataType: "json",
     success: success,
     error: function error(xhr, status, _error) {
+      console.log(xhr.responseText);
       var messageObj = JSON.parse(xhr.responseText);
       handleError(messageObj.error);
     }

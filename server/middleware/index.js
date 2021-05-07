@@ -25,7 +25,7 @@ const requiresSecure = (req, res, next) => {
 
 const requiresPremium = (req, res, next) => {
   if (req.session.account.premium !== true && req.session.account.premium !== 'true') {
-    return res.redirect('/maker'); // redirect to a premium page later
+    return res.json({ redirect: '/maker' }); // redirect to a premium page later
   }
   return next();
 };
@@ -40,11 +40,12 @@ const requiresPremiumConditional = (req, res, next) => {
         return res.status(400).json({ error: 'An error occurred' });
       // if the user has 5 or more teams, cannot make more
       } if (docs.length >= 5) {
-        return res.redirect('/maker'); // redirect to a premium page later
+        return res.json({ redirect: '/maker' }); // redirect to a premium page later
       }
       // just do the next() call
       return next();
     });
+    return false;
   }
   return next();
 };

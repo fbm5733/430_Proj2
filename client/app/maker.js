@@ -6,7 +6,9 @@ let detailsRef;
 const newTeam = (e) => {
     $("#teamMessage").animate({width:'hide'},350);
     
-    sendAjax( 'POST', '/maker', { new: "true", name: "New Team", _csrf: document.querySelector('#csrf').value }, function() {
+    sendAjax( 'POST', '/maker', { new: "true", name: "New Team", _csrf: document.querySelector('#csrf').value }, function(data) {
+        //checks if you need to redirect
+        if(data.redirect) redirect(data);
         loadTeamsFromServer();
     });
 };
@@ -17,6 +19,13 @@ const TeamForm = (props) => {
         <input type="hidden" id='csrf' name="_csrf" value={props.csrf} />
     );
 };
+
+//button for making a new team
+const NewTeamButton = function(props) {
+    return (
+        <button className="newTeam" onClick={newTeam}>+</button>
+    );
+}
     
 //create the inital list of all the teams, with all 6 members of each displayed
 const TeamList = function(props) {
@@ -24,6 +33,7 @@ const TeamList = function(props) {
         return (
             <div className="teamList">
                 <h3 className="emptyTeam">No Teams yet</h3>
+                <NewTeamButton/>
             </div>
         );
     }
@@ -59,9 +69,13 @@ const TeamList = function(props) {
     });
 
     return (
+        <React.Fragment>
+        <NewTeamButton/>
         <div className="teamList">
             {teamNodes}
         </div>
+        <NewTeamButton/>
+        </React.Fragment>
     );
 };
 
