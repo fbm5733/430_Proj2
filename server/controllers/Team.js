@@ -82,7 +82,7 @@ const getTeamDetails = (request, response) => {
 
     // start making the response
     const team = doc;
-    const obj = { name: team.name, _id: team._id };
+    const obj = { name: team.name, _id: team._id, sharable: team.sharable };
     obj.members = {};
 
     // this will decrement every time that a pokemon is added to the teams part of the obj
@@ -201,7 +201,7 @@ const speciesSearch = (request, response) => {
 };
 
 const makeSharable = (request, response) => {
-  const searchID = request.params.teamID;
+  const searchID = request.query.teamID;
 
   // makes this one sharable, then responds with the ID again
   Team.TeamModel.findByIdAndUpdate(searchID,
@@ -227,7 +227,6 @@ const sharedPage = (request, response) => {
     return res.render('shared', { error: 'No ID Provided' });
   }
 
-  //
   Team.TeamModel.findById(searchID, (err, doc) => {
     // if it isn't sharable or it's a bad ID then don't show it
     if (err || !doc.sharable) {

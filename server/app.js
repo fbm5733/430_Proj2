@@ -74,7 +74,30 @@ app.use(session({
   },
 }));
 
-app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
+// makes helpers for handlebars
+const handlebars = expressHandlebars.create({
+  // Specify helpers which are only registered on this instance.
+  helpers: {
+    loop(n) {
+      // array of length n, with values for each
+      return Array.from(Array(n).keys());
+    },
+    memberExists(members, index) {
+      // checks if the member exists
+      if (members[index]) {
+        return true;
+      }
+      return false;
+    },
+    getMemberProp(members, index, property) {
+      // gets a specific property
+      return members[index][property];
+    },
+  },
+  defaultLayout: 'main',
+});
+
+app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
 app.use(cookieParser());

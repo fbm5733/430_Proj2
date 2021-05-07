@@ -11,15 +11,28 @@
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
 <body>
-  <nav><a href="/"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
+  <nav><a href="/"><img id="logo" src="/assets/img/pokeball.png" alt="pokeball logo"/></a>
     <div class="navlink"><a href="/logout">Log out</a></div>
+    <div class="navlink"><a href="/settings">Settings</a></div>
   </nav>
   <section id="teams">
-    <div class="team">
+    <div class="teamList">
       {{#if teams}}
-          <div class="team"><img src="/assets/img/teamface.jpeg" alt="team face" class="teamFace"/>
-            <h3 class="teamName">Name: {{teams.name}}</h3>
-            <h3 class="teamAge">Age: {{teams.age}}</h3>
+          <div class="team" id="sharedTeam">
+            <h2 class="teamName">{{teams.name}}</h3>
+            <div class="innerTeam">
+              {{#each (loop 6)}}
+                <div class="teamMember">
+                  {{#if (memberExists ../teams.members @index)}}
+                    <img width="475" src={{getMemberProp ../teams.members @index 'image'}} alt={{getMemberProp ../teams.members @index 'name'}} />
+                    <h3>{{getMemberProp ../teams.members @index 'name'}}</h3>
+                  {{else}}
+                    <img width="475" src="/assets/img/transparent.gif" alt="Empty" />
+                    <h3>Empty</h3>
+                  {{/if}}
+                </div>
+              {{/each}}
+            </div>
           </div>
       {{else}}
         <h3 class="emptyTeam">No Shared Teams Found</h3>

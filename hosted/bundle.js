@@ -87,8 +87,9 @@ var TeamList = function TeamList(props) {
     } //function when you click share button
 
 
-    function handleShare() {
+    function handleShare(e) {
       getShareLink(team._id);
+      e.stopPropagation();
     }
 
     ;
@@ -748,6 +749,7 @@ var saveTeam = function saveTeam(e) {
   var jsonData = {
     name: currentTeam.name,
     members: [],
+    sharable: currentTeam.sharable,
     _csrf: document.querySelector('#csrf').value
   }; //end json
 

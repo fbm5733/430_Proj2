@@ -125,6 +125,21 @@ const changePassword = (request, response) => {
   }); // authenticate
 };
 
+const makePremium = (request, response) => {
+  // makes this one sharable, then responds with the ID again
+  Account.AccountModel.findByIdAndUpdate(request.session.account._id,
+    { $set: { premium: true } },
+    { new: true },
+    (err, newAccount) => {
+      if (err) {
+        response.status(400).json({ error: 'Bad Team ID' });
+      } else {
+        request.session.account = Account.AccountModel.toAPI(newAccount);
+        response.json({ redirect: '/maker' });
+      }
+    });
+};
+
 const getToken = (request, response) => {
   const req = request;
   const res = response;
@@ -140,6 +155,7 @@ const getToken = (request, response) => {
 module.exports.loginPage = loginPage;
 module.exports.settingsPage = settingsPage;
 module.exports.passwordChange = changePassword;
+module.exports.makePremium = makePremium;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;

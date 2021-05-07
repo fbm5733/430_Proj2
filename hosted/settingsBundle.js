@@ -15,6 +15,29 @@ var handlePassChange = function handlePassChange(e) {
   return false;
 };
 
+var PremiumSection = function PremiumSection(props) {
+  var button;
+
+  if (props.result.premium && (props.result.premium === "true" || props.result.premium === true)) {
+    //already has premium
+    button = /*#__PURE__*/React.createElement("h2", {
+      className: "big",
+      id: "hasPremium"
+    }, "You already have Premium");
+  } else {
+    var handleClick = function handleClick() {
+      sendAjax('GET', '/makePremium', null, redirect);
+    };
+
+    button = /*#__PURE__*/React.createElement("button", {
+      id: "premiumButton",
+      onClick: handleClick
+    }, "Get Premium Now!");
+  }
+
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "Premium Mode!"), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, "No team limit!"), /*#__PURE__*/React.createElement("li", null, "Share teams with others!"), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("strike", null, "A monkey will be shipped to your house!"))), button);
+};
+
 var PassChange = function PassChange(props) {
   return /*#__PURE__*/React.createElement("form", {
     id: "passForm",
@@ -23,7 +46,9 @@ var PassChange = function PassChange(props) {
     action: "/passwordChange",
     method: "POST",
     className: "mainForm"
-  }, /*#__PURE__*/React.createElement("label", {
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "big"
+  }, "Change Password"), /*#__PURE__*/React.createElement("label", {
     htmlFor: "username"
   }, "Username: "), /*#__PURE__*/React.createElement("input", {
     id: "user",
@@ -55,15 +80,18 @@ var PassChange = function PassChange(props) {
   }));
 };
 
-var createLoginWindow = function createLoginWindow(csrf) {
+var createLoginWindow = function createLoginWindow(result) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(PremiumSection, {
+    result: result
+  }), document.querySelector("#premium"));
   ReactDOM.render( /*#__PURE__*/React.createElement(PassChange, {
-    csrf: csrf
+    csrf: result.csrf
   }), document.querySelector("#passChange"));
 };
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
-    createLoginWindow(result.csrfToken);
+    createLoginWindow(result);
   });
 };
 

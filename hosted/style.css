@@ -50,31 +50,13 @@ nav:nth-child(1) {
     background-color: #66bdff;
 }
 
-.makeTeamSubmit {
-    transition: background-color 0.4s ease;
-    display: inline;
-    width: 90px;
-    background-color: #55acee;
-    border-radius: 2px;
-    color: white;
-    text-decoration: none;
-}
-
-.makeTeamSubmit:link, .makeTeamSubmit:visited, .makeTeamSubmit:hover, .makeTeamSubmit:active {
-    color: white;
-}
-
-.makeTeamSubmit:hover {
-    transition: background-color 0.4s ease;
-    background-color: #338acc;
-}
-
 .mainForm {
     height: 300px;
     width: 350px;
     margin: 0 auto;
     padding-top: 350px;
     font-size: 1.2em;
+    text-align: center;
 }
 
 .mainForm h3 {
@@ -83,7 +65,7 @@ nav:nth-child(1) {
 
 .mainForm label {
     display: inline-block;
-    width: 100px;
+    width: fit-content;
     margin-right: 10px;
     text-align: right;
     font-size: 1.2em;
@@ -112,6 +94,17 @@ nav:nth-child(1) {
 .formSubmit:hover {
     transition: background-color 0.4s ease;
     background-color: #338acc;
+}
+
+ul {
+  width: 500px;
+  margin: 0px auto;
+  font-size: 1.75rem;
+}
+
+#passForm {
+  width: 400px;
+  padding: 50px;
 }
 
 #user, #pass, #pass2 {
@@ -202,7 +195,7 @@ nav:nth-child(1) {
 
 /* Copied stuff */
 
-#teams, #title {
+#teams, .big, h1 {
   text-align: center;
   background-color: rgb(161, 253, 255);
   border-radius: 30px;
@@ -212,7 +205,11 @@ nav:nth-child(1) {
   padding: 30px;
 }
 
-#title {
+h1 {
+  font-size: 2.5rem;
+}
+
+.big, h1 {
   width: fit-content;
 }
 
@@ -247,6 +244,15 @@ nav:nth-child(1) {
 
 .team:active {
   background-color: rgb(68, 207, 209);
+}
+
+#sharedTeam {
+  cursor: default;
+}
+
+#sharedTeam:hover, #sharedTeam:active {
+  background-color: rgb(117, 253, 255);
+  border: 5px solid #012169;
 }
 
 .innerTeam {
@@ -288,8 +294,7 @@ nav:nth-child(1) {
   bottom: 0;
 }
 
-.newTeam, .saveTeam, .shareButton{
-  text-align: center;
+.newTeam, .saveTeam, .shareButton, .formSubmit, #premiumButton{
   width:100px;
   height:100px;
   background-color:#3A28A8;
@@ -308,7 +313,13 @@ nav:nth-child(1) {
   width: 500px;
 }
 
-.newTeam:hover, .saveTeam:hover, .shareButton:hover{
+.formSubmit {
+  font-size: 2rem;
+  width: 350px;
+  height: 75px;
+}
+
+.newTeam:hover, .saveTeam:hover, .shareButton:hover, #premiumButton:hover{
     background-color: #012169;
     box-shadow: 5px 5px 5px#3928a856;
     color: #a6b6c5;
@@ -316,6 +327,14 @@ nav:nth-child(1) {
 
 h3 {
   text-transform: capitalize;
+}
+
+#premiumButton {
+  width: 400px;
+  height: 150px;
+  font-size: 3rem;
+  margin: 20px auto;
+  display: block;
 }
 
 #nameInput {
@@ -361,4 +380,10 @@ h3 {
   border-radius: 10px;
   background-color: #f7d117;
   border: 3px solid #012169;
+}
+
+#hasPremium {
+  background-color: #f3ffae;
+  border-color: #3A28A8;
+  box-shadow: 5px 5px 5px #3928a856;;
 }
