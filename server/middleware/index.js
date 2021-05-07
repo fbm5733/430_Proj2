@@ -1,3 +1,7 @@
+const models = require('../models');
+
+const { Team } = models;
+
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
     return res.redirect('/');
@@ -22,27 +26,28 @@ const requiresSecure = (req, res, next) => {
 const requiresPremium = (req, res, next) => {
   if (req.session.account.premium !== true && req.session.account.premium !== 'true') {
     return res.redirect('/maker'); // redirect to a premium page later
-  } 
+  }
   return next();
 };
 
 const requiresPremiumConditional = (req, res, next) => {
-  //check if premium, and if this is a new Team
+  // check if premium, and if this is a new Team
   if (req.session.account.premium !== true && req.session.account.premium !== 'true' && req.body.new === 'true') {
-    //finds how many teams the user has
+    // finds how many teams the user has
     Team.TeamModel.findByOwner(req.session.account._id, (err, docs) => {
       if (err) {
         console.log(err);
         return res.status(400).json({ error: 'An error occurred' });
-      //if the user has 5 or more teams, cannot make more
-      } else if(docs.length >= 5) {
+      // if the user has 5 or more teams, cannot make more
+      } if (docs.length >= 5) {
         return res.redirect('/maker'); // redirect to a premium page later
       }
-      //just fall through to the next() call
+      // just do the next() call
+      return next();
     });
   }
   return next();
-}
+};
 
 const bypassSecure = (req, res, next) => {
   next();
