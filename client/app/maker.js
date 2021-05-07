@@ -362,7 +362,6 @@ class DetailsScreen extends React.Component {
 
         const extraPieces = [];
 
-        debugger;
         let speciesValue = "";
 
         //if there's data for this pokemon, then make all the extra-detailed pieces

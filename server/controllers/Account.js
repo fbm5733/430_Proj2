@@ -99,8 +99,7 @@ const changePassword = (request, response) => {
   return Account.AccountModel.authenticate(username, password, (err, account) => {
     // checks for an error, if it doesn't exist, or it isn't this user
     if (err || !account || (account._id !== req.session.account._id && `${account._id}` !== req.session.account._id)) {
-      console.log(account);
-      console.log(req.session.account);
+      console.log(err);
       return res.status(401).json({ error: 'Wrong username or password' });
     }
 

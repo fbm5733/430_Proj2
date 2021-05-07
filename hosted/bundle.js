@@ -450,7 +450,6 @@ var DetailsScreen = /*#__PURE__*/function (_React$Component4) {
       var obj = this.state.obj;
       var data = obj.data;
       var extraPieces = [];
-      debugger;
       var speciesValue = ""; //if there's data for this pokemon, then make all the extra-detailed pieces
 
       if (data) {
@@ -886,7 +885,6 @@ var sendAjax = function sendAjax(type, action, data, success) {
     dataType: "json",
     success: success,
     error: function error(xhr, status, _error) {
-      console.log(xhr.responseText);
       var messageObj = JSON.parse(xhr.responseText);
       handleError(messageObj.error);
     }
