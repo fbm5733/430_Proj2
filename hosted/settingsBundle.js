@@ -85,7 +85,7 @@ var createLoginWindow = function createLoginWindow(result) {
     result: result
   }), document.querySelector("#premium"));
   ReactDOM.render( /*#__PURE__*/React.createElement(PassChange, {
-    csrf: result.csrf
+    csrf: result.csrfToken
   }), document.querySelector("#passChange"));
 };
 

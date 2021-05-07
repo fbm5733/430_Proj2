@@ -72,7 +72,7 @@ const createLoginWindow = (result) => {
         document.querySelector("#premium")
     );
     ReactDOM.render(
-        <PassChange csrf={result.csrf} />,
+        <PassChange csrf={result.csrfToken} />,
         document.querySelector("#passChange")
     );
 };
