@@ -84,8 +84,14 @@ var TeamList = function TeamList(props) {
       }, /*#__PURE__*/React.createElement(SpeciesImageName, {
         species: species
       })));
+    } //function when you click share button
+
+
+    function handleShare() {
+      getShareLink(team._id);
     }
 
+    ;
     return /*#__PURE__*/React.createElement("div", {
       key: team._id,
       id: "t".concat(team._id),
@@ -97,9 +103,12 @@ var TeamList = function TeamList(props) {
       className: "teamName"
     }, " ", team.name, " "), /*#__PURE__*/React.createElement("div", {
       className: "innerTeam"
-    }, memberNodes));
+    }, memberNodes), /*#__PURE__*/React.createElement("button", {
+      className: "shareButton",
+      onClick: handleShare
+    }, "Share Team"));
   });
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(NewTeamButton, null), /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "teamList"
   }, teamNodes), /*#__PURE__*/React.createElement(NewTeamButton, null));
 };
@@ -808,22 +817,25 @@ var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
     setup(result.csrfToken);
   });
-}; //NOT USED YET, TO SEE A WORKING VERSION YOU CAN LOOK AT HOW I DID IT IN DOMOMAKER-E
-
+};
 
 var getShareLink = function getShareLink(id) {
-  //get the current page link (can't use absolutes because the host may change)
-  var urlString = window.location.href; //gets the first index of / to find the start of the word maker. Starts at 10 to skip over https://
+  sendAjax('GET', "/share?teamID=".concat(id), null, function (data) {
+    //checks if you need to redirect
+    if (data.redirect) return redirect(data); //get the current page link (can't use absolutes because the host may change)
 
-  var pageIndex = urlString.indexOf("/", 10) + 6; //makes the whole URL
+    var urlString = window.location.href; //gets the first index of / to find the start of the word maker. Starts at 10 to skip over https://
 
-  urlString = "".concat(urlString.substring(0, pageIndex), "/").concat(id); //copies the share link to the clipboard
+    var pageIndex = urlString.indexOf("/", 10) + 6; //makes the whole URL
 
-  navigator.clipboard.writeText(urlString).then(function () {
-    //shows the success
-    alert("Link copied successfully");
-  }, function () {
-    alert("Link copy failed");
+    urlString = "".concat(urlString.substring(0, pageIndex), "/").concat(id); //copies the share link to the clipboard
+
+    navigator.clipboard.writeText(urlString).then(function () {
+      //shows the success
+      alert("Link copied successfully");
+    }, function () {
+      alert("Link copy failed");
+    });
   });
 };
 

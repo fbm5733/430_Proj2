@@ -200,6 +200,22 @@ const speciesSearch = (request, response) => {
   });
 };
 
+const makeSharable = (request, response) => {
+  const searchID = request.params.teamID;
+
+  // makes this one sharable, then responds with the ID again
+  Team.TeamModel.findOneAndUpdate({ _id: searchID },
+    { $set: { sharable: true } },
+    { upsert: true, new: true },
+    (err) => {
+      if (err) {
+        response.status(400).json({ error: 'Bad Team ID' });
+      } else {
+        response.json({ searchID });
+      }
+    });
+};
+
 const sharedPage = (request, response) => {
   const req = request;
   const res = response;
@@ -229,6 +245,7 @@ module.exports.make = makeTeam;
 module.exports.makerPage = makerPage;
 module.exports.getTeams = getTeams;
 module.exports.getTeamDetails = getTeamDetails;
+module.exports.makeSharable = makeSharable;
 module.exports.sharedPage = sharedPage;
 module.exports.getSpeciesData = getSpeciesData;
 module.exports.speciesSearch = speciesSearch;

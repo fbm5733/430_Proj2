@@ -4,6 +4,9 @@ html, body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    background-color: rgb(209, 252, 253);
+    color: #012169;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #logo {
@@ -45,30 +48,6 @@ nav:nth-child(1) {
 .navlink a:hover {
     transition: background-color 0.8s ease;
     background-color: #66bdff;
-}
-
-.teamForm {
-    border: 2px solid #338acc;
-    height: 35px;
-    width: 750px;
-    margin-top:0px;
-    padding-top:10px;
-    background-color: #55acee;
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
-}
-
-.teamForm label {
-    display: inline-block;
-    width: 75px;
-    margin-left: 10px;
-    font-size: 1.2em;
-    float: left;
-    color: white;
-}
-
-.teamForm input[type=text] {
-    float:left;
 }
 
 .makeTeamSubmit {
@@ -196,6 +175,8 @@ nav:nth-child(1) {
     border-radius: 4px;
     margin: 0 auto;
     margin-top: 100px;
+    font-size: 2em;
+    text-align: center;
 }
 
 .team {
@@ -211,63 +192,6 @@ nav:nth-child(1) {
     overflow: hidden;
 }
 
-.team:hover {
-    transition: border-color 0.2s ease-out;
-    border-color: rgba(255,255,255, 0.8);
-    transition: background-color 2.6s ease-out;
-    background-color: #66bfff;
-}
-
-img.teamFace {
-    margin-left: 25px;
-    margin-right: 10px;
-    height: 50px;
-    width: 50px;
-    border-radius: 4px;
-    margin-top:10px;
-    float:left;
-}
-
-h3.emptyTeam {
-    width: 400px;
-    font-size: 1.5em;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 18px;
-}
-
-h3.teamName {
-    float:left;
-    width: 200px;
-    font-weight: bold;
-    padding-left: 65px;
-    font-size: 1.5em;
-}
-
-h3.teamAge {
-    float:right;
-    text-align: left;
-    width: 100px;
-    font-weight: bold;
-    padding-right: 40px;
-    font-size: 1.5em;
-}
-
-h3.teamSharable, button.teamSharable {
-    float:left;
-    text-align: left;
-    width: 200px;
-    font-weight: bold;
-    padding-left: 40px;
-    font-size: 1.5em;
-}
-
-button.teamSharable {
-    font-size: 1em;
-    height: 50px;
-    margin-top: 15px;
-}
-
 .team:first-child {
     margin-top: 10px;
 }
@@ -276,7 +200,9 @@ button.teamSharable {
     margin-bottom:10px;
 }
 
-#teamFlex, #title {
+/* Copied stuff */
+
+#teams, #title {
   text-align: center;
   background-color: rgb(161, 253, 255);
   border-radius: 30px;
@@ -290,7 +216,7 @@ button.teamSharable {
   width: fit-content;
 }
 
-#teamFlex {
+#teams {
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -315,6 +241,8 @@ button.teamSharable {
 
 .team:hover {
   background-color: rgb(103, 229, 231);
+  transition: border-color 0.2s ease-out;
+  border-color: rgba(255,255,255, 0.8);
 }
 
 .team:active {
@@ -360,13 +288,13 @@ button.teamSharable {
   bottom: 0;
 }
 
-.newTeam, .saveTeam{
+.newTeam, .saveTeam, .shareButton{
   text-align: center;
-	width:100px;
-	height:100px;
-	background-color:#3A28A8;
-	color:#f1f6fa;
-	border-radius:50px;
+  width:100px;
+  height:100px;
+  background-color:#3A28A8;
+  color:#f1f6fa;
+  border-radius:50px;
   text-align:center;
   box-shadow: 5px 5px 5px #3928a856;
   text-decoration: none;
@@ -376,11 +304,11 @@ button.teamSharable {
   cursor: pointer;
 }
 
-.saveTeam {
+.saveTeam, .shareButton {
   width: 500px;
 }
 
-.newTeam:hover, .saveTeam:hover{
+.newTeam:hover, .saveTeam:hover, .shareButton:hover{
     background-color: #012169;
     box-shadow: 5px 5px 5px#3928a856;
     color: #a6b6c5;
@@ -434,165 +362,3 @@ h3 {
   background-color: #f7d117;
   border: 3px solid #012169;
 }
-
-
-/* Copied stuff */
-
-#teams, #title {
-    text-align: center;
-    background-color: rgb(161, 253, 255);
-    border-radius: 30px;
-    border: 5px solid #012169 ;
-    width: 80%;
-    margin: 30px auto;
-    padding: 30px;
-  }
-  
-  #title {
-    width: fit-content;
-  }
-  
-  #teams {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .team, .teamPage{
-    background-color: rgb(117, 253, 255);
-    border-radius: 30px;
-    border: 5px solid #012169;
-    width: 80%;
-    max-width: 750px;
-    margin: 30px auto;
-    padding: 30px;
-    height: fit-content;
-    cursor: pointer;
-    text-align: center;
-  }
-  
-  .teamPage {
-    cursor:default;
-  }
-  
-  .team:hover {
-    background-color: rgb(103, 229, 231);
-  }
-  
-  .team:active {
-    background-color: rgb(68, 207, 209);
-  }
-  
-  .innerTeam {
-    display: flex;
-    flex-direction: row;
-    flex-flow: wrap;
-    justify-content: space-between;
-  }
-  
-  .teamMember, .teamMemberEdit {
-    width: 30%;
-    height: fit-content;
-    margin-bottom: 20px;
-    position: relative;
-  }
-  
-  .teamMember img, .teamMemberEdit img {
-    max-width: 100%;
-    object-fit: cover;
-    background-color: #f3ffae;
-    border-radius: 15px;
-    z-index: 4;
-  }
-  
-  .teamMember h3, .teamMemberEdit h3 {
-    margin: 0px;
-  }
-  
-  .teamMemberEdit:hover:after {
-    cursor: pointer;
-    border-radius: 15px;
-    background-color: rgba(0, 0, 0, 0.2);
-    z-index: 5;
-    position:absolute;
-    content: '';
-    top:0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-  }
-  
-  .newTeam, .saveTeam{
-    text-align: center;
-      width:100px;
-      height:100px;
-      background-color:#3A28A8;
-      color:#f1f6fa;
-      border-radius:50px;
-    text-align:center;
-    box-shadow: 5px 5px 5px #3928a856;
-    text-decoration: none;
-    font-size: 4rem;
-    font-weight: 800;
-    margin: 0px auto;
-    cursor: pointer;
-  }
-  
-  .saveTeam {
-    width: 500px;
-  }
-  
-  .newTeam:hover, .saveTeam:hover{
-      background-color: #012169;
-      box-shadow: 5px 5px 5px#3928a856;
-      color: #a6b6c5;
-  }
-  
-  h3 {
-    text-transform: capitalize;
-  }
-  
-  #nameInput {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    border-radius: 10px;
-  }
-  
-  #detailsDiv {
-    padding: 0px;
-    text-align: center;
-  }
-  
-  .question {
-    width: 85%;
-    text-overflow: none;
-    display: flex;
-    justify-content: space-between;
-    margin: 15px auto 15px auto;
-    padding: 10px;
-    border: 3px solid #f7d117;
-    border-radius: 20px;
-    background-color: #f3ffae;
-    align-items: center;
-  }
-  
-  .label {
-    font-weight: bold;
-    font-size: 1.3rem;
-    width: 30%;
-  }
-  
-  .search {
-    font-size: 1.5rem;
-    width: 30%;
-    border-radius: 10px;
-  }
-  
-  .select {
-    font-size: 1.5rem;
-    text-transform: capitalize;
-    width: 30%;
-    border-radius: 10px;
-    background-color: #f7d117;
-    border: 3px solid #012169;
-  }

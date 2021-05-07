@@ -8,6 +8,7 @@ const router = (app) => {
   app.get('/getSpeciesData', mid.requiresLogin, controllers.Team.getSpeciesData);
   app.get('/speciesSearch', controllers.Team.speciesSearch);
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('/share', mid.requiresLogin, mid.requiresPremium, controllers.Team.makeSharable);
   app.get('/maker/:teamId', mid.requiresLogin, controllers.Team.sharedPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);

@@ -58,19 +58,24 @@ const TeamList = function(props) {
             );
         }
 
+        //function when you click share button
+        function handleShare() {
+            getShareLink(team._id);
+        };
+
         return (
             <div key={team._id} id={`t${team._id}`} className="team" onClick = {() => { sendAjax('GET', `/getTeamDetails?_id=${team._id}`, null, setupTeamCreateScreen); }}>
                 <h2 className="teamName"> {team.name} </h2>
                 <div className="innerTeam"> 
                     {memberNodes} 
                 </div>
+                <button className="shareButton" onClick={handleShare}>Share Team</button>
             </div>
         );
     });
 
     return (
         <React.Fragment>
-        <NewTeamButton/>
         <div className="teamList">
             {teamNodes}
         </div>
@@ -699,23 +704,27 @@ const getToken = () => {
     });
 };
 
-//NOT USED YET, TO SEE A WORKING VERSION YOU CAN LOOK AT HOW I DID IT IN DOMOMAKER-E
 const getShareLink = (id) => {
+    
+    sendAjax('GET', `/share?teamID=${id}`, null, (data) => {
+        
+        //checks if you need to redirect
+        if(data.redirect) return redirect(data);
 
-    //get the current page link (can't use absolutes because the host may change)
-    let urlString = window.location.href;
-    //gets the first index of / to find the start of the word maker. Starts at 10 to skip over https://
-    let pageIndex = urlString.indexOf("/", 10) + 6;
-    //makes the whole URL
-    urlString = `${urlString.substring(0, pageIndex)}/${id}`;
+        //get the current page link (can't use absolutes because the host may change)
+        let urlString = window.location.href;
+        //gets the first index of / to find the start of the word maker. Starts at 10 to skip over https://
+        let pageIndex = urlString.indexOf("/", 10) + 6;
+        //makes the whole URL
+        urlString = `${urlString.substring(0, pageIndex)}/${id}`;
 
-
-    //copies the share link to the clipboard
-    navigator.clipboard.writeText(urlString).then(() => {
-        //shows the success
-        alert("Link copied successfully");
-    }, () => {
-        alert("Link copy failed");
+        //copies the share link to the clipboard
+        navigator.clipboard.writeText(urlString).then(() => {
+            //shows the success
+            alert("Link copied successfully");
+        }, () => {
+            alert("Link copy failed");
+        });
     });
 };
 
