@@ -7,16 +7,13 @@ const { Team } = models;
 // creates the pokedex object
 const P = new Pokedex();
 
-const makerPage = (req, res) => {
-    return res.render('app');
-};
+const makerPage = (req, res) => res.render('app');
 
 const makeTeam = (req, res) => {
   // defaults to false - only changed when you click the share link
   const sharable = req.body.sharable || 'false';
   // defaults for everything else
   const name = req.body.name || 'New Team';
-  console.log(req.body);
   const members = req.body.members || [];
 
   const teamData = {

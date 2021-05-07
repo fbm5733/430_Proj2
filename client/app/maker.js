@@ -1,5 +1,6 @@
 let currentTeam = {};
 let currentSpecies = {};
+let detailsRef;
 
 const handleTeam = (e) => {
     e.preventDefault();
@@ -13,20 +14,10 @@ const handleTeam = (e) => {
     return false;
 };
 
+//the form is not a form anymore, just a hidden csrf
 const TeamForm = (props) => {
     return (
-        <form id="teamForm"
-                onSubmit={handleTeam}
-                name="teamForm"
-                action="/maker"
-                method="POST"
-                className="teamForm"
-            >
-            <label htmlFor="name">Name: </label>
-            <input id="teamName" type="text" name="name" placeholder="Team Name" />
-            <input type="hidden" id='csrf' name="_csrf" value={props.csrf} />
-            <input className="makeTeamSubmit" type="submit" value="New Team" />
-        </form>
+        <input type="hidden" id='csrf' name="_csrf" value={props.csrf} />
     );
 };
     
@@ -325,113 +316,134 @@ class MoveSelectOptions extends React.Component {
     }
 }
 
-const DetailsScreen = (props) => {
-    const obj = props.obj;
-    const data = obj.data;
+class DetailsScreen extends React.Component { 
+    //makes a constructor
+    constructor(props) {
+        super(props);
 
-    const extraPieces = [];
-
-    let speciesValue = "";
-
-    //if there's data for this pokemon, then make all the extra-detailed pieces
-    if(data) {
-            
-        //sets the data in the current species
-        currentSpecies.data = data;
-        let moves = data.moves.map((move, index) => {
-            return {
-            name: move.move.name, 
-            id: index //need to save the index to store it if the user picks it
-            };
-        });
-
-        //sets the default value for species to be the name picked
-        speciesValue = data.name;
-
-        //function for when an ability is selected
-        function handleAbilitySelect(e) {
-            let newAbility = e.target.value;
-            let abilityText = e.target.options[e.target.selectedIndex].text;
-            currentSpecies.selections.abilityValue = newAbility;
-            currentTeam.members[obj.id].abilityValue = newAbility;
-            currentSpecies.selections.ability = abilityText;
-            currentTeam.members[obj.id].ability = abilityText;
+        this.state = {
+            obj: props.obj,
         };
 
-        //creates a div for choosing the Ability
-        extraPieces.push(
-            <div key="ability" className="question">
-                <label className="label">Ability: </label>
-                <select defaultValue={currentSpecies.selections.abilityValue} className="select" id="abilitySelect" onChange={handleAbilitySelect} >
-                    <AbilitySelectOptions data={data}/>
-                </select>
-            </div>
-        );
+        this.handleNewSpecies = this.handleNewSpecies.bind(this);
+    }
 
-        //makes 4 move choosers
-        for(let i = 0; i < 4; i++) {
+    //handles the change in the results
+    handleNewSpecies(obj, callback) {
+        this.setState({ obj: obj }, callback);
+    }
 
-            //selected move
-            let searchValue = "";
-            let tempSearchValue = currentSpecies.selections.moves[i];
-            if(tempSearchValue && tempSearchValue !== "None"){
-                searchValue = tempSearchValue;
-            }
+    //render function
+    render() {    
+        const obj = this.state.obj;
+        const data = obj.data;
 
-            let childMove = React.createRef();
+        const extraPieces = [];
 
-            //function for handling a move being searched for
-            function handleMoveSearch(e) {
-                let selected = document.querySelector(`#moveSelect${i}`);
-                searchMove(selected, data, i, obj.id, e.target.value.trim().toLowerCase(), childMove);
-            }
+        let speciesValue = "";
 
-            //set up onchange event for the select list
-            function handleMoveSelect(e) {
-                //changes the move and move text
-                let moveChoice = e.target.value;
-                let moveText = e.target.options[e.target.selectedIndex].text;
-                currentSpecies.selections.moveValues[i] = moveChoice;
-                currentTeam.members[obj.id].moveValues[i] = moveChoice;
-                currentSpecies.selections.moves[i] = moveText;
-                currentTeam.members[obj.id].moves[i] = moveText;
-            }
+        //if there's data for this pokemon, then make all the extra-detailed pieces
+        if(data) {
+                
+            //sets the data in the current species
+            currentSpecies.data = data;
+            let moves = data.moves.map((move, index) => {
+                return {
+                name: move.move.name, 
+                id: index //need to save the index to store it if the user picks it
+                };
+            });
 
+            //sets the default value for species to be the name picked
+            speciesValue = data.name;
+
+            //function for when an ability is selected
+            function handleAbilitySelect(e) {
+                let newAbility = e.target.value;
+                let abilityText = e.target.options[e.target.selectedIndex].text;
+                currentSpecies.selections.abilityValue = newAbility;
+                currentTeam.members[obj.id].abilityValue = newAbility;
+                currentSpecies.selections.ability = abilityText;
+                currentTeam.members[obj.id].ability = abilityText;
+            };
+
+            //creates a div for choosing the Ability
             extraPieces.push(
-                <div key={`move${i}`} className="question">
-                    <label className="label">{`Move ${i + 1}: `}</label>
-                    <input defaultValue={searchValue} className="search" onChange={handleMoveSearch}/>
-                    <select onChange={handleMoveSelect} defaultValue={searchValue} className="select" id={`moveSelect${i}`}>
-                        <MoveSelectOptions ref={childMove} results={moves} />
+                <div key="ability" className="question">
+                    <label className="label">Ability: </label>
+                    <select defaultValue={currentSpecies.selections.abilityValue} className="select" id="abilitySelect" onChange={handleAbilitySelect} >
+                        <AbilitySelectOptions data={data}/>
                     </select>
                 </div>
             );
+
+            //makes 4 move choosers
+            for(let i = 0; i < 4; i++) {
+
+                //selected move
+                let searchValue = "";
+                let tempSearchValue = currentSpecies.selections.moves[i];
+                if(tempSearchValue && tempSearchValue !== "None"){
+                    searchValue = tempSearchValue;
+                }
+
+                let childMove = React.createRef();
+
+                //function for handling a move being searched for
+                function handleMoveSearch(e) {
+                    let selected = document.querySelector(`#moveSelect${i}`);
+                    searchMove(selected, data, i, obj.id, e.target.value.trim().toLowerCase(), childMove);
+                }
+
+                //set up onchange event for the select list
+                function handleMoveSelect(e) {
+                    //changes the move and move text
+                    let moveChoice = e.target.value;
+                    let moveText = e.target.options[e.target.selectedIndex].text;
+                    currentSpecies.selections.moveValues[i] = moveChoice;
+                    currentTeam.members[obj.id].moveValues[i] = moveChoice;
+                    currentSpecies.selections.moves[i] = moveText;
+                    currentTeam.members[obj.id].moves[i] = moveText;
+                }
+
+                extraPieces.push(
+                    <div key={`move${i}`} className="question">
+                        <label className="label">{`Move ${i + 1}: `}</label>
+                        <input defaultValue={searchValue} className="search" onChange={handleMoveSearch}/>
+                        <select onChange={handleMoveSelect} defaultValue={searchValue} className="select" id={`moveSelect${i}`}>
+                            <MoveSelectOptions ref={childMove} results={moves} />
+                        </select>
+                    </div>
+                );
+            }
         }
+
+        let selectRef = React.createRef();
+
+        function handleResponseReceived(obj) {
+            speciesSelectFunc(obj, selectRef);
+        }
+
+        function handleSpeciesSearch(e) {
+            selectRef.current.handleResults([], true);
+            sendAjax('GET', `/speciesSearch?q=${encodeURIComponent(e.target.value)}`, null, handleResponseReceived);
+        }
+
+        sendAjax('GET', `/speciesSearch?q=${speciesValue}`, null, handleResponseReceived);
+
+        return (
+            <React.Fragment>
+            <div className="question">
+                <label className="label">Pokemon Name: </label>
+                <input defaultValue={speciesValue} id="speciesSearch" className="search" onChange={handleSpeciesSearch} onLoad = {handleSpeciesSearch}/>
+                <select defaultValue={speciesValue} className="select" id="speciesSelect" onChange={null} >
+                    <SpeciesSelectOptions ref={selectRef} results={[]} loading={true}/>
+                </select>
+            </div>
+            {extraPieces}
+            </React.Fragment>
+        );
     }
-
-    let selectRef = React.createRef();
-
-    function handleResponseReceived(obj) {
-        speciesSelectFunc(obj, selectRef);
-    }
-
-    function handleSpeciesSearch(e) {
-        selectRef.current.handleResults([], true);
-        sendAjax('GET', `/speciesSearch?q=${encodeURIComponent(e.target.value)}`, null, handleResponseReceived);
-    }
-
-    return (
-        <React.Fragment>
-        <div className="question">
-            <label className="label">Pokemon Name: </label>
-            <input defaultValue={speciesValue} id="speciesSearch" className="search" onChange={handleSpeciesSearch} />
-            <select defaultValue={speciesValue} className="select" id="speciesSelect" onChange={null} >
-                <SpeciesSelectOptions ref={selectRef} results={[]} loading={true}/>
-            </select>
-         </div>
-         {extraPieces}
-        </React.Fragment>
-    );
 };
 
 const showSpeciesData = (obj) => {
@@ -459,21 +471,34 @@ const showSpeciesData = (obj) => {
         currentTeam.members[obj.id] = newObj;
     }
 
-    //renders
-    ReactDOM.render(
-        <DetailsScreen obj={obj} />, detailsDiv, () => {
-            //callback
-            //display it now
-            detailsDiv.style.display = 'block';
+    
+    //callback for creating details page
+    function callback() {
+        //display it now
+        detailsDiv.style.display = 'block';
 
-            //dispatch event so the select list is filled
-            let speciesSearch = document.querySelector("#speciesSearch");
+        //fill the value in
+        let speciesSearch = document.querySelector("#speciesSearch");
+        if(obj.data) {
             speciesSearch.value = obj.data.name;
-            speciesSearch.dispatchEvent(new Event("change"));
-
-            window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes
+        } else {
+            speciesSearch.value = "";
         }
-    );
+        
+
+        window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes (doesn't work?)
+    }
+
+    //renders or changes the state, depending on if it exists yet
+    if(!detailsRef) {
+        detailsRef = React.createRef();
+
+        ReactDOM.render(
+            <DetailsScreen ref={detailsRef} obj={obj} />, detailsDiv, callback
+        );
+    } else {
+        detailsRef.current.handleNewSpecies(obj, callback);
+    }
 };
 
 //pupulates the select list
@@ -586,6 +611,7 @@ const saveTeam = (e) => {
         ReactDOM.render(
             <TeamList teams={[]} />, document.querySelector("#teams")
         );
+        detailsRef = null;
         loadTeamsFromServer();
     };
 
@@ -631,8 +657,6 @@ const saveTeam = (e) => {
         }
     }
 
-
-    console.log(jsonData);
     sendAjax('POST', '/maker', jsonData, dataLoaded);
 
     return false;

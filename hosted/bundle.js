@@ -24,6 +24,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 var currentTeam = {};
 var currentSpecies = {};
+var detailsRef;
 
 var handleTeam = function handleTeam(e) {
   e.preventDefault();
@@ -34,33 +35,16 @@ var handleTeam = function handleTeam(e) {
     loadTeamsFromServer();
   });
   return false;
-};
+}; //the form is not a form anymore, just a hidden csrf
+
 
 var TeamForm = function TeamForm(props) {
-  return /*#__PURE__*/React.createElement("form", {
-    id: "teamForm",
-    onSubmit: handleTeam,
-    name: "teamForm",
-    action: "/maker",
-    method: "POST",
-    className: "teamForm"
-  }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "name"
-  }, "Name: "), /*#__PURE__*/React.createElement("input", {
-    id: "teamName",
-    type: "text",
-    name: "name",
-    placeholder: "Team Name"
-  }), /*#__PURE__*/React.createElement("input", {
+  return /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     id: "csrf",
     name: "_csrf",
     value: props.csrf
-  }), /*#__PURE__*/React.createElement("input", {
-    className: "makeTeamSubmit",
-    type: "submit",
-    value: "New Team"
-  }));
+  });
 }; //create the inital list of all the teams, with all 6 members of each displayed
 
 
@@ -402,133 +386,171 @@ var MoveSelectOptions = /*#__PURE__*/function (_React$Component3) {
   return MoveSelectOptions;
 }(React.Component);
 
-var DetailsScreen = function DetailsScreen(props) {
-  var obj = props.obj;
-  var data = obj.data;
-  var extraPieces = [];
-  var speciesValue = ""; //if there's data for this pokemon, then make all the extra-detailed pieces
+var DetailsScreen = /*#__PURE__*/function (_React$Component4) {
+  _inherits(DetailsScreen, _React$Component4);
 
-  if (data) {
-    //function for when an ability is selected
-    var handleAbilitySelect = function handleAbilitySelect(e) {
-      var newAbility = e.target.value;
-      var abilityText = e.target.options[e.target.selectedIndex].text;
-      currentSpecies.selections.abilityValue = newAbility;
-      currentTeam.members[obj.id].abilityValue = newAbility;
-      currentSpecies.selections.ability = abilityText;
-      currentTeam.members[obj.id].ability = abilityText;
+  var _super4 = _createSuper(DetailsScreen);
+
+  //makes a constructor
+  function DetailsScreen(props) {
+    var _this4;
+
+    _classCallCheck(this, DetailsScreen);
+
+    _this4 = _super4.call(this, props);
+    _this4.state = {
+      obj: props.obj
     };
+    _this4.handleNewSpecies = _this4.handleNewSpecies.bind(_assertThisInitialized(_this4));
+    return _this4;
+  } //handles the change in the results
 
-    //sets the data in the current species
-    currentSpecies.data = data;
-    var moves = data.moves.map(function (move, index) {
-      return {
-        name: move.move.name,
-        id: index //need to save the index to store it if the user picks it
 
-      };
-    }); //sets the default value for species to be the name picked
+  _createClass(DetailsScreen, [{
+    key: "handleNewSpecies",
+    value: function handleNewSpecies(obj, callback) {
+      this.setState({
+        obj: obj
+      }, callback);
+    } //render function
 
-    speciesValue = data.name;
-    ; //creates a div for choosing the Ability
+  }, {
+    key: "render",
+    value: function render() {
+      var obj = this.state.obj;
+      var data = obj.data;
+      var extraPieces = [];
+      var speciesValue = ""; //if there's data for this pokemon, then make all the extra-detailed pieces
 
-    extraPieces.push( /*#__PURE__*/React.createElement("div", {
-      key: "ability",
-      className: "question"
-    }, /*#__PURE__*/React.createElement("label", {
-      className: "label"
-    }, "Ability: "), /*#__PURE__*/React.createElement("select", {
-      defaultValue: currentSpecies.selections.abilityValue,
-      className: "select",
-      id: "abilitySelect",
-      onChange: handleAbilitySelect
-    }, /*#__PURE__*/React.createElement(AbilitySelectOptions, {
-      data: data
-    })))); //makes 4 move choosers
+      if (data) {
+        //function for when an ability is selected
+        var handleAbilitySelect = function handleAbilitySelect(e) {
+          var newAbility = e.target.value;
+          var abilityText = e.target.options[e.target.selectedIndex].text;
+          currentSpecies.selections.abilityValue = newAbility;
+          currentTeam.members[obj.id].abilityValue = newAbility;
+          currentSpecies.selections.ability = abilityText;
+          currentTeam.members[obj.id].ability = abilityText;
+        };
 
-    var _loop2 = function _loop2(i) {
-      //selected move
-      var searchValue = "";
-      var tempSearchValue = currentSpecies.selections.moves[i];
+        //sets the data in the current species
+        currentSpecies.data = data;
+        var moves = data.moves.map(function (move, index) {
+          return {
+            name: move.move.name,
+            id: index //need to save the index to store it if the user picks it
 
-      if (tempSearchValue && tempSearchValue !== "None") {
-        searchValue = tempSearchValue;
+          };
+        }); //sets the default value for species to be the name picked
+
+        speciesValue = data.name;
+        ; //creates a div for choosing the Ability
+
+        extraPieces.push( /*#__PURE__*/React.createElement("div", {
+          key: "ability",
+          className: "question"
+        }, /*#__PURE__*/React.createElement("label", {
+          className: "label"
+        }, "Ability: "), /*#__PURE__*/React.createElement("select", {
+          defaultValue: currentSpecies.selections.abilityValue,
+          className: "select",
+          id: "abilitySelect",
+          onChange: handleAbilitySelect
+        }, /*#__PURE__*/React.createElement(AbilitySelectOptions, {
+          data: data
+        })))); //makes 4 move choosers
+
+        var _loop2 = function _loop2(i) {
+          //selected move
+          var searchValue = "";
+          var tempSearchValue = currentSpecies.selections.moves[i];
+
+          if (tempSearchValue && tempSearchValue !== "None") {
+            searchValue = tempSearchValue;
+          }
+
+          var childMove = React.createRef(); //function for handling a move being searched for
+
+          function handleMoveSearch(e) {
+            var selected = document.querySelector("#moveSelect".concat(i));
+            searchMove(selected, data, i, obj.id, e.target.value.trim().toLowerCase(), childMove);
+          } //set up onchange event for the select list
+
+
+          function handleMoveSelect(e) {
+            //changes the move and move text
+            var moveChoice = e.target.value;
+            var moveText = e.target.options[e.target.selectedIndex].text;
+            currentSpecies.selections.moveValues[i] = moveChoice;
+            currentTeam.members[obj.id].moveValues[i] = moveChoice;
+            currentSpecies.selections.moves[i] = moveText;
+            currentTeam.members[obj.id].moves[i] = moveText;
+          }
+
+          extraPieces.push( /*#__PURE__*/React.createElement("div", {
+            key: "move".concat(i),
+            className: "question"
+          }, /*#__PURE__*/React.createElement("label", {
+            className: "label"
+          }, "Move ".concat(i + 1, ": ")), /*#__PURE__*/React.createElement("input", {
+            defaultValue: searchValue,
+            className: "search",
+            onChange: handleMoveSearch
+          }), /*#__PURE__*/React.createElement("select", {
+            onChange: handleMoveSelect,
+            defaultValue: searchValue,
+            className: "select",
+            id: "moveSelect".concat(i)
+          }, /*#__PURE__*/React.createElement(MoveSelectOptions, {
+            ref: childMove,
+            results: moves
+          }))));
+        };
+
+        for (var i = 0; i < 4; i++) {
+          _loop2(i);
+        }
       }
 
-      var childMove = React.createRef(); //function for handling a move being searched for
+      var selectRef = React.createRef();
 
-      function handleMoveSearch(e) {
-        var selected = document.querySelector("#moveSelect".concat(i));
-        searchMove(selected, data, i, obj.id, e.target.value.trim().toLowerCase(), childMove);
-      } //set up onchange event for the select list
-
-
-      function handleMoveSelect(e) {
-        //changes the move and move text
-        var moveChoice = e.target.value;
-        var moveText = e.target.options[e.target.selectedIndex].text;
-        currentSpecies.selections.moveValues[i] = moveChoice;
-        currentTeam.members[obj.id].moveValues[i] = moveChoice;
-        currentSpecies.selections.moves[i] = moveText;
-        currentTeam.members[obj.id].moves[i] = moveText;
+      function handleResponseReceived(obj) {
+        speciesSelectFunc(obj, selectRef);
       }
 
-      extraPieces.push( /*#__PURE__*/React.createElement("div", {
-        key: "move".concat(i),
+      function handleSpeciesSearch(e) {
+        selectRef.current.handleResults([], true);
+        sendAjax('GET', "/speciesSearch?q=".concat(encodeURIComponent(e.target.value)), null, handleResponseReceived);
+      }
+
+      sendAjax('GET', "/speciesSearch?q=".concat(speciesValue), null, handleResponseReceived);
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
         className: "question"
       }, /*#__PURE__*/React.createElement("label", {
         className: "label"
-      }, "Move ".concat(i + 1, ": ")), /*#__PURE__*/React.createElement("input", {
-        defaultValue: searchValue,
+      }, "Pokemon Name: "), /*#__PURE__*/React.createElement("input", {
+        defaultValue: speciesValue,
+        id: "speciesSearch",
         className: "search",
-        onChange: handleMoveSearch
+        onChange: handleSpeciesSearch,
+        onLoad: handleSpeciesSearch
       }), /*#__PURE__*/React.createElement("select", {
-        onChange: handleMoveSelect,
-        defaultValue: searchValue,
+        defaultValue: speciesValue,
         className: "select",
-        id: "moveSelect".concat(i)
-      }, /*#__PURE__*/React.createElement(MoveSelectOptions, {
-        ref: childMove,
-        results: moves
-      }))));
-    };
-
-    for (var i = 0; i < 4; i++) {
-      _loop2(i);
+        id: "speciesSelect",
+        onChange: null
+      }, /*#__PURE__*/React.createElement(SpeciesSelectOptions, {
+        ref: selectRef,
+        results: [],
+        loading: true
+      }))), extraPieces);
     }
-  }
+  }]);
 
-  var selectRef = React.createRef();
+  return DetailsScreen;
+}(React.Component);
 
-  function handleResponseReceived(obj) {
-    speciesSelectFunc(obj, selectRef);
-  }
-
-  function handleSpeciesSearch(e) {
-    selectRef.current.handleResults([], true);
-    sendAjax('GET', "/speciesSearch?q=".concat(encodeURIComponent(e.target.value)), null, handleResponseReceived);
-  }
-
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "question"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "label"
-  }, "Pokemon Name: "), /*#__PURE__*/React.createElement("input", {
-    defaultValue: speciesValue,
-    id: "speciesSearch",
-    className: "search",
-    onChange: handleSpeciesSearch
-  }), /*#__PURE__*/React.createElement("select", {
-    defaultValue: speciesValue,
-    className: "select",
-    id: "speciesSelect",
-    onChange: null
-  }, /*#__PURE__*/React.createElement(SpeciesSelectOptions, {
-    ref: selectRef,
-    results: [],
-    loading: true
-  }))), extraPieces);
-};
+;
 
 var showSpeciesData = function showSpeciesData(obj) {
   var detailsDiv = document.querySelector("#detailsDiv"); //the user clicked somewhere else before the response got back, so don't do anything anymore
@@ -553,21 +575,34 @@ var showSpeciesData = function showSpeciesData(obj) {
     });
     currentSpecies.selections = newObj;
     currentTeam.members[obj.id] = newObj;
-  } //renders
+  } //callback for creating details page
 
 
-  ReactDOM.render( /*#__PURE__*/React.createElement(DetailsScreen, {
-    obj: obj
-  }), detailsDiv, function () {
-    //callback
+  function callback() {
     //display it now
-    detailsDiv.style.display = 'block'; //dispatch event so the select list is filled
+    detailsDiv.style.display = 'block'; //fill the value in
 
     var speciesSearch = document.querySelector("#speciesSearch");
-    speciesSearch.value = obj.data.name;
-    speciesSearch.dispatchEvent(new Event("change"));
-    window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes
-  });
+
+    if (obj.data) {
+      speciesSearch.value = obj.data.name;
+    } else {
+      speciesSearch.value = "";
+    }
+
+    window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes (doesn't work?)
+  } //renders or changes the state, depending on if it exists yet
+
+
+  if (!detailsRef) {
+    detailsRef = React.createRef();
+    ReactDOM.render( /*#__PURE__*/React.createElement(DetailsScreen, {
+      ref: detailsRef,
+      obj: obj
+    }), detailsDiv, callback);
+  } else {
+    detailsRef.current.handleNewSpecies(obj, callback);
+  }
 }; //pupulates the select list
 
 
@@ -684,6 +719,7 @@ var saveTeam = function saveTeam(e) {
     ReactDOM.render( /*#__PURE__*/React.createElement(TeamList, {
       teams: []
     }), document.querySelector("#teams"));
+    detailsRef = null;
     loadTeamsFromServer();
   }; //creates the data and sends it
 
@@ -734,7 +770,6 @@ var saveTeam = function saveTeam(e) {
     }
   }
 
-  console.log(jsonData);
   sendAjax('POST', '/maker', jsonData, dataLoaded);
   return false;
 };
