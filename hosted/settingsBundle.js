@@ -7,7 +7,7 @@ var handlePassChange = function handlePassChange(e) {
   }, 350);
 
   if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
-    handleError("RAWR! Username or password is empty");
+    handleError("No fields can be empty");
     return false;
   }
 
@@ -101,7 +101,7 @@ $(document).ready(function () {
 "use strict";
 
 var handleError = function handleError(message) {
-  $("#errorMessage").text(message);
+  $("#errorMessage span").text(message);
   $("#porygonMessage").animate({
     right: 100
   }, 350);

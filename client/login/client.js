@@ -4,7 +4,7 @@ const handleLogin = (e) => {
     $("#porygonMessage").animate({right: -250},350);
 
     if($("#user").val() == '' || $("#pass").val() == '') {
-        handleError("RAWR! Username or password is empty");
+        handleError("Username or password is empty");
         return false;
     }
 
@@ -19,12 +19,12 @@ const handleSignup = (e) => {
     $("#porygonMessage").animate({right:-250},350);
 
     if($("#user").val() == '' || $("#pass").val() == "" || $("#pass2").val() == '') {
-        handleError("RAWR! All fields are required");
+        handleError("All fields are required");
         return false;
     }
 
     if($("#pass").val() !== $("#pass2").val()) {
-        handleError("RAWR! Passwords do not match");
+        handleError("Passwords do not match");
         return false;
     }
 

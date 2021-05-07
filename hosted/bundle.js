@@ -23,8 +23,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 var currentTeam = {};
-var currentSpecies = {};
-var detailsRef; //makes a new team
+var currentSpecies = {}; //makes a new team
 
 var newTeam = function newTeam(e) {
   $("#porygonMessage").animate({
@@ -451,6 +450,7 @@ var DetailsScreen = /*#__PURE__*/function (_React$Component4) {
       var obj = this.state.obj;
       var data = obj.data;
       var extraPieces = [];
+      debugger;
       var speciesValue = ""; //if there's data for this pokemon, then make all the extra-detailed pieces
 
       if (data) {
@@ -475,7 +475,15 @@ var DetailsScreen = /*#__PURE__*/function (_React$Component4) {
         }); //sets the default value for species to be the name picked
 
         speciesValue = data.name;
-        ; //creates a div for choosing the Ability
+        ; //selected ability
+
+        var abilityValue = "";
+        var tempAbilityValue = currentSpecies.selections.abilityValue;
+
+        if (tempAbilityValue || tempAbilityValue === 0 || tempAbilityValue === "0") {
+          abilityValue = tempAbilityValue;
+        } //creates a div for choosing the Ability
+
 
         extraPieces.push( /*#__PURE__*/React.createElement("div", {
           key: "ability",
@@ -483,7 +491,7 @@ var DetailsScreen = /*#__PURE__*/function (_React$Component4) {
         }, /*#__PURE__*/React.createElement("label", {
           className: "label"
         }, "Ability: "), /*#__PURE__*/React.createElement("select", {
-          defaultValue: currentSpecies.selections.abilityValue,
+          defaultValue: abilityValue,
           className: "select",
           id: "abilitySelect",
           onChange: handleAbilitySelect
@@ -494,10 +502,12 @@ var DetailsScreen = /*#__PURE__*/function (_React$Component4) {
         var _loop2 = function _loop2(i) {
           //selected move
           var searchValue = "";
+          var selectValue = "";
           var tempSearchValue = currentSpecies.selections.moves[i];
 
           if (tempSearchValue && tempSearchValue !== "None") {
             searchValue = tempSearchValue;
+            selectValue = currentSpecies.selections.moveValues[i];
           }
 
           var childMove = React.createRef(); //function for handling a move being searched for
@@ -529,7 +539,7 @@ var DetailsScreen = /*#__PURE__*/function (_React$Component4) {
             onChange: handleMoveSearch
           }), /*#__PURE__*/React.createElement("select", {
             onChange: handleMoveSelect,
-            defaultValue: searchValue,
+            defaultValue: selectValue,
             className: "select",
             id: "moveSelect".concat(i)
           }, /*#__PURE__*/React.createElement(MoveSelectOptions, {
@@ -622,18 +632,14 @@ var showSpeciesData = function showSpeciesData(obj) {
     }
 
     window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes (doesn't work?)
-  } //renders or changes the state, depending on if it exists yet
+  } //I tried for almost a whole day to make this work with states, but always had slight issues with the select lists.
+  //This way doesn't have these errors but is probably not the best way to do it
 
 
-  if (!detailsRef) {
-    detailsRef = React.createRef();
-    ReactDOM.render( /*#__PURE__*/React.createElement(DetailsScreen, {
-      ref: detailsRef,
-      obj: obj
-    }), detailsDiv, callback);
-  } else {
-    detailsRef.current.handleNewSpecies(obj, callback);
-  }
+  ReactDOM.unmountComponentAtNode(detailsDiv);
+  ReactDOM.render( /*#__PURE__*/React.createElement(DetailsScreen, {
+    obj: obj
+  }), detailsDiv, callback);
 }; //pupulates the select list
 
 
@@ -750,7 +756,6 @@ var saveTeam = function saveTeam(e) {
     ReactDOM.render( /*#__PURE__*/React.createElement(TeamList, {
       teams: []
     }), document.querySelector("#teams"));
-    detailsRef = null;
     loadTeamsFromServer();
   };
 
@@ -859,7 +864,7 @@ $(document).ready(function () {
 "use strict";
 
 var handleError = function handleError(message) {
-  $("#errorMessage").text(message);
+  $("#errorMessage span").text(message);
   $("#porygonMessage").animate({
     right: 100
   }, 350);

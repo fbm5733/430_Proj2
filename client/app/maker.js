@@ -1,6 +1,5 @@
 let currentTeam = {};
 let currentSpecies = {};
-let detailsRef;
 
 //makes a new team
 const newTeam = (e) => {
@@ -363,6 +362,7 @@ class DetailsScreen extends React.Component {
 
         const extraPieces = [];
 
+        debugger;
         let speciesValue = "";
 
         //if there's data for this pokemon, then make all the extra-detailed pieces
@@ -390,11 +390,18 @@ class DetailsScreen extends React.Component {
                 currentTeam.members[obj.id].ability = abilityText;
             };
 
+            //selected ability
+            let abilityValue = "";
+            let tempAbilityValue = currentSpecies.selections.abilityValue;
+            if(tempAbilityValue || tempAbilityValue === 0 || tempAbilityValue === "0"){
+                abilityValue = tempAbilityValue;
+            }
+
             //creates a div for choosing the Ability
             extraPieces.push(
                 <div key="ability" className="question">
                     <label className="label">Ability: </label>
-                    <select defaultValue={currentSpecies.selections.abilityValue} className="select" id="abilitySelect" onChange={handleAbilitySelect} >
+                    <select defaultValue={abilityValue} className="select" id="abilitySelect" onChange={handleAbilitySelect} >
                         <AbilitySelectOptions data={data}/>
                     </select>
                 </div>
@@ -405,9 +412,11 @@ class DetailsScreen extends React.Component {
 
                 //selected move
                 let searchValue = "";
+                let selectValue = ""
                 let tempSearchValue = currentSpecies.selections.moves[i];
                 if(tempSearchValue && tempSearchValue !== "None"){
                     searchValue = tempSearchValue;
+                    selectValue = currentSpecies.selections.moveValues[i];
                 }
 
                 let childMove = React.createRef();
@@ -433,7 +442,7 @@ class DetailsScreen extends React.Component {
                     <div key={`move${i}`} className="question">
                         <label className="label">{`Move ${i + 1}: `}</label>
                         <input defaultValue={searchValue} className="search" onChange={handleMoveSearch}/>
-                        <select onChange={handleMoveSelect} defaultValue={searchValue} className="select" id={`moveSelect${i}`}>
+                        <select onChange={handleMoveSelect} defaultValue={selectValue} className="select" id={`moveSelect${i}`}>
                             <MoveSelectOptions ref={childMove} results={moves} />
                         </select>
                     </div>
@@ -512,16 +521,12 @@ const showSpeciesData = (obj) => {
         window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes (doesn't work?)
     }
 
-    //renders or changes the state, depending on if it exists yet
-    if(!detailsRef) {
-        detailsRef = React.createRef();
-
-        ReactDOM.render(
-            <DetailsScreen ref={detailsRef} obj={obj} />, detailsDiv, callback
-        );
-    } else {
-        detailsRef.current.handleNewSpecies(obj, callback);
-    }
+    //I tried for almost a whole day to make this work with states, but always had slight issues with the select lists.
+    //This way doesn't have these errors but is probably not the best way to do it
+    ReactDOM.unmountComponentAtNode(detailsDiv);
+    ReactDOM.render(
+        <DetailsScreen obj={obj} />, detailsDiv, callback
+    );
 };
 
 //pupulates the select list
@@ -634,7 +639,6 @@ const saveTeam = (e) => {
         ReactDOM.render(
             <TeamList teams={[]} />, document.querySelector("#teams")
         );
-        detailsRef = null;
         loadTeamsFromServer();
     };
 

@@ -4,7 +4,7 @@ const handlePassChange = (e) => {
     $("#porygonMessage").animate({right:-250},350);
 
     if($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
-        handleError("RAWR! Username or password is empty");
+        handleError("No fields can be empty");
         return false;
     }
 
