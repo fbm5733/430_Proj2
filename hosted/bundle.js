@@ -1,5 +1,27 @@
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 var currentTeam = {};
 var currentSpecies = {};
 
@@ -39,7 +61,8 @@ var TeamForm = function TeamForm(props) {
     type: "submit",
     value: "New Team"
   }));
-};
+}; //create the inital list of all the teams, with all 6 members of each displayed
+
 
 var TeamList = function TeamList(props) {
   if (props.teams.length === 0) {
@@ -51,40 +74,20 @@ var TeamList = function TeamList(props) {
   }
 
   var teamNodes = props.teams.map(function (team) {
+    document.title = "Team Maker";
     var memberNodes = []; //iterates 6 times, once each possible team member
     //ones that don't exist will have an empty member created
 
     for (var i = 0; i < 6; i++) {
       //get the team member from the object
-      var species = team.members[i]; //creates the team member
+      var species = team.members[i]; //pushes it with the SpeciesImageName component
 
-      var teamMember = document.createElement("div");
-      teamMember.className = "teamMember"; //if it exists then add it, if not make an empty spot
-
-      if (species && species.image) {
-        //gives it the image
-        memberNodes.push( /*#__PURE__*/React.createElement("div", {
-          key: "".concat(team._id, " + ").concat(i),
-          className: "teamMember"
-        }, /*#__PURE__*/React.createElement("img", {
-          width: "475",
-          src: species.image,
-          alt: species.name
-        }), /*#__PURE__*/React.createElement("h3", null, species.name)));
-      } else {
-        // http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif
-        // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
-        //This is a very small gif file that will be used in place of a pokemon image if 
-        //there isn't a pokemon in that slot of the team.
-        memberNodes.push( /*#__PURE__*/React.createElement("div", {
-          key: "".concat(team._id, " + ").concat(i),
-          className: "teamMember"
-        }, /*#__PURE__*/React.createElement("img", {
-          src: "/assets/img/transparent.gif",
-          alt: "Empty Slot",
-          width: "475"
-        })));
-      }
+      memberNodes.push( /*#__PURE__*/React.createElement("div", {
+        key: "".concat(team._id, " + ").concat(i),
+        className: "teamMember"
+      }, /*#__PURE__*/React.createElement(SpeciesImageName, {
+        species: species
+      })));
     }
 
     return /*#__PURE__*/React.createElement("div", {
@@ -98,116 +101,151 @@ var TeamList = function TeamList(props) {
       className: "teamName"
     }, " ", team.name, " "), /*#__PURE__*/React.createElement("div", {
       className: "innerTeam"
-    }, " ", memberNodes, " "));
+    }, memberNodes));
   });
   return /*#__PURE__*/React.createElement("div", {
     className: "teamList"
   }, teamNodes);
 };
 
-var TeamCreateScreen = function TeamCreateScreen(props) {};
+var SpeciesImageName = /*#__PURE__*/function (_React$Component) {
+  _inherits(SpeciesImageName, _React$Component);
 
-var setupTeamCreateScreen = function setupTeamCreateScreen(obj) {
-  //ReactDOM.render(
-  //  <TeamCreateScreen team={data} />, document.querySelector("#teams")
-  //);
-  //TODO: MAKE REACT
+  var _super = _createSuper(SpeciesImageName);
+
+  //initialize
+  function SpeciesImageName(props) {
+    var _this;
+
+    _classCallCheck(this, SpeciesImageName);
+
+    _this = _super.call(this, props);
+    var species = props.species; //defaults for the species, empty
+
+    if (!species) {
+      species = {
+        image: "/assets/img/transparent.gif",
+        name: "Empty"
+      };
+    } //sets the state
+
+
+    _this.state = {
+      species: species
+    };
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    return _this;
+  } //handles the change in the species
+
+
+  _createClass(SpeciesImageName, [{
+    key: "handleChange",
+    value: function handleChange(newSpecies) {
+      var species = newSpecies; //defaults for the species, empty
+
+      if (!species) {
+        species = {
+          image: "/assets/img/transparent.gif",
+          name: "Empty"
+        };
+      } //sets the state
+
+
+      this.setState({
+        species: species
+      });
+    } //render the component
+
+  }, {
+    key: "render",
+    value: function render() {
+      //displays the name and image 
+      //the defaults are in case the species exists but hte name/image doesn't (should never happen but checking anyway)
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("img", {
+        width: "475",
+        src: this.state.species.image || "/assets/img/transparent.gif",
+        alt: this.state.species.name || "Empty"
+      }), /*#__PURE__*/React.createElement("h3", null, this.state.species.name || "Empty"));
+    }
+  }]);
+
+  return SpeciesImageName;
+}(React.Component);
+
+var TeamCreateScreen = function TeamCreateScreen(props) {
   //sets the team we are working with
-  currentTeam = obj;
-  var teamFlex = document.querySelector("#teams");
-  ReactDOM.unmountComponentAtNode(teamFlex);
-  teamFlex.innerHTML = ""; //it will say loading so we need to clear that
-  //makes the save team link and appends it
+  currentTeam = props.team;
+  document.title = "Team Maker - ".concat(currentTeam.name);
+  var memberNodes = []; //iterates 6 times, once each possible team member
+  //ones that don't exist will have an empty member created
 
-  var saveLink = document.createElement("button");
-  saveLink.className = "saveTeam";
-  saveLink.textContent = "Save & Exit";
-  saveLink.onclick = saveTeam;
-  teamFlex.append(saveLink); //create the team div
+  var _loop = function _loop(i) {
+    //get the team member from the object
+    var species = currentTeam.members[i];
+    var childSpecies = React.createRef(); //sends the reference up so they can be changed later
 
-  var teamDiv = document.createElement("div");
-  teamDiv.className = "teamPage"; //create the team name
+    function startEditMember(e) {
+      editMember(e, childSpecies);
+    } //pushes it with the SpeciesImageName component
 
-  var teamName = document.createElement("input");
-  teamName.id = "nameInput";
-  teamName.value = obj.name; //onchange, sets the current team name
 
-  teamName.onchange = function (e) {
-    currentTeam.name = e.target.value; //document.querySelector("#title").textContent = e.target.value;
+    memberNodes.push( /*#__PURE__*/React.createElement("div", {
+      key: "m".concat(i),
+      id: "m".concat(i),
+      className: "teamMemberEdit",
+      onClick: startEditMember
+    }, /*#__PURE__*/React.createElement(SpeciesImageName, {
+      ref: childSpecies,
+      species: species
+    })));
   };
 
-  teamDiv.append(teamName);
-  var innerTeam = document.createElement("div");
-  innerTeam.className = "innerTeam"; //document.querySelector("#title").textContent = obj.name;
-
-  for (var j = 0; j < 6; j++) {
-    //get the team member from the object
-    var species = obj.members[j]; //creates the team member
-
-    var teamMember = document.createElement("div");
-    teamMember.className = "teamMemberEdit";
-    teamMember.id = "m".concat(j); //m1, m2, etc. stand for Member1, Member2, etc
-
-    teamMember.onclick = editMember; //edit screen for team member
-    //if it exists then add it, if not make an empty spot
-
-    if (species) {
-      //gives it the image
-      var image = document.createElement("img");
-      image.src = species.image;
-      image.alt = species.name;
-      image.width = '475'; //appends the image
-
-      teamMember.append(image); //gives it the name header
-
-      var pokName = document.createElement("h3");
-      pokName.textContent = species.name; //appends the name
-
-      teamMember.append(pokName);
-    } else {
-      // http://probablyprogramming.com/wp-content/uploads/2009/03/handtinytrans.gif
-      // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
-      //This is a very small gif file that will be used in place of a pokemon image if 
-      //there isn't a pokemon in that slot of the team.
-      var _image = document.createElement("img");
-
-      _image.src = "/assets/img/transparent.gif";
-      _image.alt = "Empty Slot"; //width makes sure it's the same size as the other images (which are all 475x475)
-
-      _image.width = '475'; //appends
-
-      teamMember.append(_image); //gives it the empty name header
-
-      var _pokName = document.createElement("h3");
-
-      _pokName.textContent = "Empty"; //appends the name
-
-      teamMember.append(_pokName);
-    } //end else
+  for (var i = 0; i < 6; i++) {
+    _loop(i);
+  } //function for changing the name
 
 
-    innerTeam.append(teamMember);
-  } //end loop
-  //appends everything when done
+  function handleNameChange(e) {
+    currentTeam.name = e.target.value;
+    document.title = "Team Maker - ".concat(currentTeam.name);
+  }
 
+  ;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+    className: "saveTeam",
+    onClick: saveTeam
+  }, "Save & Exit"), /*#__PURE__*/React.createElement("div", {
+    className: "teamPage"
+  }, /*#__PURE__*/React.createElement("input", {
+    id: "nameInput",
+    defaultValue: currentTeam.name,
+    onChange: handleNameChange
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "innerTeam"
+  }, memberNodes)), /*#__PURE__*/React.createElement("div", {
+    className: "teamPage",
+    id: "detailsDiv",
+    style: {
+      display: 'none'
+    }
+  }));
+};
 
-  teamDiv.append(innerTeam);
-  teamFlex.append(teamDiv);
-  var detailsDiv = document.createElement("div");
-  detailsDiv.className = "teamPage";
-  detailsDiv.id = "detailsDiv";
-  detailsDiv.style.display = 'none';
-  teamFlex.append(detailsDiv);
+var setupTeamCreateScreen = function setupTeamCreateScreen(obj) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(TeamCreateScreen, {
+    team: obj
+  }), document.querySelector("#teams"));
 }; //picks the member and sends the request
 
 
-var editMember = function editMember(e) {
+var editMember = function editMember(e, ref) {
   //sets the member we're working with
   var id = e.currentTarget.id.substring(1);
   currentSpecies = {
-    id: id
+    id: id,
+    ref: ref
   };
-  var member = currentTeam.members[id];
+  var member = currentTeam.members[id]; //starts displaying appropriately
 
   if (member) {
     currentSpecies.selections = member;
@@ -217,15 +255,285 @@ var editMember = function editMember(e) {
       id: id
     });
   }
-}; //TODO: Make REACT
+};
 
+var SpeciesSelectOptions = /*#__PURE__*/function (_React$Component2) {
+  _inherits(SpeciesSelectOptions, _React$Component2);
+
+  var _super2 = _createSuper(SpeciesSelectOptions);
+
+  function SpeciesSelectOptions(props) {
+    var _this2;
+
+    _classCallCheck(this, SpeciesSelectOptions);
+
+    _this2 = _super2.call(this, props);
+    _this2.state = {
+      results: props.results,
+      loading: props.loading
+    };
+    _this2.handleResults = _this2.handleResults.bind(_assertThisInitialized(_this2));
+    return _this2;
+  } //handles the change in the results
+
+
+  _createClass(SpeciesSelectOptions, [{
+    key: "handleResults",
+    value: function handleResults(newResults, loading) {
+      var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
+      this.setState({
+        results: newResults,
+        loading: loading
+      }, callback);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var options = [];
+      var results = this.state.results; //if it's loading make a loading option
+
+      if (this.state.loading) {
+        options.push( /*#__PURE__*/React.createElement("option", {
+          key: "default",
+          value: ""
+        }, "Loading...")); //if none are found make a no results option
+      } else if (!results || results.length <= 0) {
+        options.push( /*#__PURE__*/React.createElement("option", {
+          key: "default",
+          value: ""
+        }, "No Results Found")); //otherwise keep going
+      } else {
+        //default option
+        options.push( /*#__PURE__*/React.createElement("option", {
+          key: "default",
+          value: ""
+        }, "None")); //option for every species
+
+        results.forEach(function (name) {
+          options.push( /*#__PURE__*/React.createElement("option", {
+            key: name,
+            value: name
+          }, name));
+        });
+      } //render
+
+
+      return /*#__PURE__*/React.createElement(React.Fragment, null, options);
+    }
+  }]);
+
+  return SpeciesSelectOptions;
+}(React.Component);
+
+var AbilitySelectOptions = function AbilitySelectOptions(props) {
+  var options = [];
+  var abilities = props.data.abilities;
+
+  for (var i = 0; i < abilities.length; i++) {
+    options.push( /*#__PURE__*/React.createElement("option", {
+      key: i,
+      value: i
+    }, abilities[i].ability.name));
+  }
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "None"), options);
+};
+
+var MoveSelectOptions = /*#__PURE__*/function (_React$Component3) {
+  _inherits(MoveSelectOptions, _React$Component3);
+
+  var _super3 = _createSuper(MoveSelectOptions);
+
+  //initialize
+  function MoveSelectOptions(props) {
+    var _this3;
+
+    _classCallCheck(this, MoveSelectOptions);
+
+    _this3 = _super3.call(this, props);
+    _this3.state = {
+      results: props.results
+    };
+    _this3.handleResults = _this3.handleResults.bind(_assertThisInitialized(_this3));
+    return _this3;
+  } //handles the change in the results
+
+
+  _createClass(MoveSelectOptions, [{
+    key: "handleResults",
+    value: function handleResults(newResults, callback) {
+      this.setState({
+        results: newResults
+      }, callback);
+    } //render the component
+
+  }, {
+    key: "render",
+    value: function render() {
+      var results = this.state.results;
+
+      if (results.length > 0) {
+        //makes all the options
+        var options = [];
+
+        for (var i = 0; i < results.length; i++) {
+          //pushes the move
+          options.push( /*#__PURE__*/React.createElement("option", {
+            key: i,
+            value: results[i].id
+          }, results[i].name));
+        } //builds the React component
+
+
+        return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("option", {
+          value: ""
+        }, "None"), options);
+      } else {
+        //version with no results
+        return /*#__PURE__*/React.createElement("option", {
+          value: ""
+        }, "No Results Found");
+      }
+    }
+  }]);
+
+  return MoveSelectOptions;
+}(React.Component);
+
+var DetailsScreen = function DetailsScreen(props) {
+  var obj = props.obj;
+  var data = obj.data;
+  var extraPieces = [];
+  var speciesValue = ""; //if there's data for this pokemon, then make all the extra-detailed pieces
+
+  if (data) {
+    //function for when an ability is selected
+    var handleAbilitySelect = function handleAbilitySelect(e) {
+      var newAbility = e.target.value;
+      var abilityText = e.target.options[e.target.selectedIndex].text;
+      currentSpecies.selections.abilityValue = newAbility;
+      currentTeam.members[obj.id].abilityValue = newAbility;
+      currentSpecies.selections.ability = abilityText;
+      currentTeam.members[obj.id].ability = abilityText;
+    };
+
+    //sets the data in the current species
+    currentSpecies.data = data;
+    var moves = data.moves.map(function (move, index) {
+      return {
+        name: move.move.name,
+        id: index //need to save the index to store it if the user picks it
+
+      };
+    }); //sets the default value for species to be the name picked
+
+    speciesValue = data.name;
+    ; //creates a div for choosing the Ability
+
+    extraPieces.push( /*#__PURE__*/React.createElement("div", {
+      key: "ability",
+      className: "question"
+    }, /*#__PURE__*/React.createElement("label", {
+      className: "label"
+    }, "Ability: "), /*#__PURE__*/React.createElement("select", {
+      defaultValue: currentSpecies.selections.abilityValue,
+      className: "select",
+      id: "abilitySelect",
+      onChange: handleAbilitySelect
+    }, /*#__PURE__*/React.createElement(AbilitySelectOptions, {
+      data: data
+    })))); //makes 4 move choosers
+
+    var _loop2 = function _loop2(i) {
+      //selected move
+      var searchValue = "";
+      var tempSearchValue = currentSpecies.selections.moves[i];
+
+      if (tempSearchValue && tempSearchValue !== "None") {
+        searchValue = tempSearchValue;
+      }
+
+      var childMove = React.createRef(); //function for handling a move being searched for
+
+      function handleMoveSearch(e) {
+        var selected = document.querySelector("#moveSelect".concat(i));
+        searchMove(selected, data, i, obj.id, e.target.value.trim().toLowerCase(), childMove);
+      } //set up onchange event for the select list
+
+
+      function handleMoveSelect(e) {
+        //changes the move and move text
+        var moveChoice = e.target.value;
+        var moveText = e.target.options[e.target.selectedIndex].text;
+        currentSpecies.selections.moveValues[i] = moveChoice;
+        currentTeam.members[obj.id].moveValues[i] = moveChoice;
+        currentSpecies.selections.moves[i] = moveText;
+        currentTeam.members[obj.id].moves[i] = moveText;
+      }
+
+      extraPieces.push( /*#__PURE__*/React.createElement("div", {
+        key: "move".concat(i),
+        className: "question"
+      }, /*#__PURE__*/React.createElement("label", {
+        className: "label"
+      }, "Move ".concat(i + 1, ": ")), /*#__PURE__*/React.createElement("input", {
+        defaultValue: searchValue,
+        className: "search",
+        onChange: handleMoveSearch
+      }), /*#__PURE__*/React.createElement("select", {
+        onChange: handleMoveSelect,
+        defaultValue: searchValue,
+        className: "select",
+        id: "moveSelect".concat(i)
+      }, /*#__PURE__*/React.createElement(MoveSelectOptions, {
+        ref: childMove,
+        results: moves
+      }))));
+    };
+
+    for (var i = 0; i < 4; i++) {
+      _loop2(i);
+    }
+  }
+
+  var selectRef = React.createRef();
+
+  function handleResponseReceived(obj) {
+    speciesSelectFunc(obj, selectRef);
+  }
+
+  function handleSpeciesSearch(e) {
+    selectRef.current.handleResults([], true);
+    sendAjax('GET', "/speciesSearch?q=".concat(encodeURIComponent(e.target.value)), null, handleResponseReceived);
+  }
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "question"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "label"
+  }, "Pokemon Name: "), /*#__PURE__*/React.createElement("input", {
+    defaultValue: speciesValue,
+    id: "speciesSearch",
+    className: "search",
+    onChange: handleSpeciesSearch
+  }), /*#__PURE__*/React.createElement("select", {
+    defaultValue: speciesValue,
+    className: "select",
+    id: "speciesSelect",
+    onChange: null
+  }, /*#__PURE__*/React.createElement(SpeciesSelectOptions, {
+    ref: selectRef,
+    results: [],
+    loading: true
+  }))), extraPieces);
+};
 
 var showSpeciesData = function showSpeciesData(obj) {
   var detailsDiv = document.querySelector("#detailsDiv"); //the user clicked somewhere else before the response got back, so don't do anything anymore
 
-  if (!detailsDiv || obj.id !== currentSpecies.id) return; //clear the details div
-
-  detailsDiv.innerHTML = ""; //resets the species if you are changing it to something new (and data is actually found)
+  if (!detailsDiv || obj.id !== currentSpecies.id) return; //resets the species if you are changing it to something new (and data is actually found)
 
   if (obj.newSpecies && obj.newSpecies === "yes" && obj.data) {
     var newObj = {
@@ -237,215 +545,90 @@ var showSpeciesData = function showSpeciesData(obj) {
       moveValues: [],
       ability: "",
       moves: []
-    }; //change the image and name
+    }; //sets the image and name for the react div based on the reference
 
-    var img = document.querySelector("#m".concat(obj.id, " img"));
-    var h3 = document.querySelector("#m".concat(obj.id, " h3"));
-    img.src = newObj.image;
-    img.alt = newObj.name;
-    h3.textContent = newObj.name;
+    currentSpecies.ref.current.handleChange({
+      image: newObj.image,
+      name: newObj.name
+    });
     currentSpecies.selections = newObj;
     currentTeam.members[obj.id] = newObj;
-  }
-
-  var data = obj.data; //create div for the first thing the user can change - the species
-
-  var speciesDiv = document.createElement("div");
-  speciesDiv.className = "question";
-  var speciesLabel = document.createElement("label");
-  speciesLabel.className = "label";
-  speciesLabel.textContent = "Pokemon Name: ";
-  speciesDiv.append(speciesLabel); //the search will perform a search that will eventually populate 
-
-  var speciesSearch = document.createElement("input");
-  speciesSearch.className = "search";
-
-  speciesSearch.onchange = function (e) {
-    sendAjax('GET', "/speciesSearch?q=".concat(encodeURIComponent(e.target.value)), null, speciesSelectFunc);
-  };
-
-  speciesDiv.append(speciesSearch); //the select changes the species
-
-  var speciesSelect = document.createElement("select");
-  speciesSelect.className = "select";
-  speciesSelect.id = "speciesSelect";
-  speciesDiv.append(speciesSelect); //option to display that the possible options are loading
-
-  var option = document.createElement("option");
-  option.value = "";
-  option.textContent = "Loading...";
-  speciesSelect.onchange = null;
-  detailsDiv.append(speciesDiv);
-  detailsDiv.style.display = 'block'; //dispatch event so the select list is filled
-
-  speciesSearch.dispatchEvent(new Event("change"));
-  window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes
-  //if there's no data, then just ask for a pokemon
-
-  if (!data) {
-    return;
-  } //sets the data in the current species
+  } //renders
 
 
-  currentSpecies.data = data; //if there is, do everything else
+  ReactDOM.render( /*#__PURE__*/React.createElement(DetailsScreen, {
+    obj: obj
+  }), detailsDiv, function () {
+    //callback
+    //display it now
+    detailsDiv.style.display = 'block'; //dispatch event so the select list is filled
 
-  speciesSelect.value = data.name;
-  speciesSearch.value = data.name; //create div for the next thing the user can change - the ability
-
-  var abilityDiv = document.createElement("div");
-  abilityDiv.className = "question";
-  var abilityLabel = document.createElement("label");
-  abilityLabel.className = "label";
-  abilityLabel.textContent = "Ability: ";
-  abilityDiv.append(abilityLabel); //the select changes the species
-
-  var abilitySelect = document.createElement("select");
-  abilitySelect.className = "select";
-  abilitySelect.id = "abilitySelect";
-  abilitySelectSetup(abilitySelect, data);
-  abilitySelect.value = currentSpecies.selections.abilityValue; //onchange event sets the currentspecies ability and the team member ability
-
-  abilitySelect.onchange = function (e) {
-    var newAbility = e.target.value;
-    var abilityText = e.target.options[e.target.selectedIndex].text;
-    currentSpecies.selections.abilityValue = newAbility;
-    currentTeam.members[obj.id].abilityValue = newAbility;
-    currentSpecies.selections.ability = abilityText;
-    currentTeam.members[obj.id].ability = abilityText;
-  };
-
-  abilityDiv.append(abilitySelect);
-  detailsDiv.append(abilityDiv); //sets up the moves section, more complicated so it's its own function
-
-  movesSetup(detailsDiv, data, obj);
+    var speciesSearch = document.querySelector("#speciesSearch");
+    speciesSearch.value = obj.data.name;
+    speciesSearch.dispatchEvent(new Event("change"));
+    window.scrollTo(0, document.body.scrollHeight); //scroll to bottom to show the changes
+  });
 }; //pupulates the select list
 
 
-var speciesSelectFunc = function speciesSelectFunc(obj) {
+var speciesSelectFunc = function speciesSelectFunc(obj, selectRef) {
   //makes sure it exists still first
   var speciesSelectList = document.querySelector("#speciesSelect");
-  var results = obj.results;
+  var results = obj.results; //changes the state
 
-  if (speciesSelectList && results && results.length > 0) {
-    //adds each option to the select list
-    speciesSelectList.innerHTML = ""; //default 'None' option
+  selectRef.current.handleResults(results, false, function () {
+    //sets up the onchange when it's done with the state change
+    if (speciesSelectList && results && results.length > 0) {
+      speciesSelectList.onchange = function (e) {
+        //changes the species
+        if (e.target.value !== "") {
+          sendAjax('GET', "/getSpeciesData?species=".concat(e.target.value, "&id=").concat(currentSpecies.id, "&newSpecies=yes"), null, showSpeciesData);
+        } else {
+          //sets the image and name for the react div based on the reference
+          currentSpecies.ref.current.handleChange({
+            image: "/assets/img/transparent.gif",
+            name: "Empty"
+          });
+          currentSpecies = {
+            id: currentSpecies.id,
+            ref: currentSpecies.ref
+          };
+          currentTeam.members[currentSpecies.id] = null; //this will empty out this div
 
-    var defOption = document.createElement("option");
-    defOption.value = "";
-    defOption.textContent = "None";
-    speciesSelectList.append(defOption);
+          showSpeciesData({
+            id: currentSpecies.id
+          });
+        }
+      };
 
-    for (var i = 0; i < results.length; i++) {
-      var option = document.createElement("option");
-      option.value = results[i];
-      option.textContent = results[i];
-      speciesSelectList.append(option);
-    }
+      var speciesCheck = false; //check if the selected one is included
 
-    speciesSelectList.onchange = function (e) {
-      //changes the species
-      if (e.target.value !== "") {
-        sendAjax('GET', "/getSpeciesData?species=".concat(e.target.value, "&id=").concat(currentSpecies.id, "&newSpecies=yes"), null, showSpeciesData);
+      results.forEach(function (species) {
+        if (currentSpecies.selections && species === currentSpecies.selections.name) speciesCheck = true;
+      }); //if there's a selected species then set the current value
+
+      if (speciesCheck) {
+        speciesSelectList.value = currentSpecies.selections.name;
       } else {
-        //removes the team member if you pick None
-        //change the image and name
-        var img = document.querySelector("#m".concat(currentSpecies.id, " img"));
-        var h3 = document.querySelector("#m".concat(currentSpecies.id, " h3"));
-        img.src = "/assets/img/transparent.gif";
-        img.alt = "Empty Slot";
-        img.width = '475';
-        h3.textContent = "Empty";
-        currentSpecies = {
-          id: currentSpecies.id
-        };
-        currentTeam.members[currentSpecies.id] = null; //this will empty out this div
-
-        showSpeciesData({
-          id: currentSpecies.id
-        });
+        speciesSelectList.value = "";
       }
-    }; //if there's a selected species then set the current value
-
-
-    if (currentSpecies.selections) speciesSelectList.value = currentSpecies.selections.name;
-  } else if (speciesSelectList) {
-    //don't have an onchange if it's null
-    speciesSelectList.innerHTML = "";
-
-    var _option = document.createElement("option");
-
-    _option.value = "";
-    _option.textContent = "No Results Found";
-    speciesSelectList.append(_option);
-    speciesSelectList.value = "";
-    speciesSelectList.onchange = null;
-  }
-};
-
-var abilitySelectSetup = function abilitySelectSetup(select, data) {
-  //option to make a null decision
-  var option = document.createElement("option");
-  option.value = "";
-  option.textContent = "None";
-  select.append(option);
-  var abilities = data.abilities;
-
-  for (var i = 0; i < abilities.length; i++) {
-    //appends an option for each ability
-    var newOption = document.createElement("option");
-    newOption.value = i;
-    newOption.textContent = abilities[i].ability.name;
-    select.append(newOption);
-  }
-};
-
-var movesSetup = function movesSetup(detailsDiv, data, obj) {
-  var _loop = function _loop(i) {
-    //create div for each of the moves
-    var moveDiv = document.createElement("div");
-    moveDiv.className = "question";
-    var moveLabel = document.createElement("label");
-    moveLabel.className = "label";
-    moveLabel.textContent = "Move ".concat(i + 1, ": ");
-    moveDiv.append(moveLabel); //the search will perform a search that will eventually populate
-
-    var moveSearch = document.createElement("input");
-    moveSearch.className = "search";
-    moveDiv.append(moveSearch); //the select changes the species
-
-    var moveSelect = document.createElement("select");
-    moveSelect.className = "select";
-    moveSelect.id = "moveSelect".concat(i);
-    moveDiv.append(moveSelect); //onchange event searches for the move
-
-    moveSearch.onchange = function (e) {
-      searchMove(moveSelect, data, i, obj.id, e.target.value.trim().toLowerCase());
-    }; //dispatch event so the select list is filled
-
-
-    moveSearch.dispatchEvent(new Event("change")); //if there's a searchvalue display it
-
-    var searchValue = currentSpecies.selections.moves[i];
-
-    if (searchValue && searchValue !== "None") {
-      moveSearch.value = searchValue;
+    } else if (speciesSelectList) {
+      //don't have an onchange if it's empty
+      speciesSelectList.value = "";
+      speciesSelectList.onchange = null;
     }
-
-    detailsDiv.append(moveDiv);
-  };
-
-  //makes 4 move setups
-  for (var i = 0; i < 4; i++) {
-    _loop(i);
-  }
+  });
 };
 
 var searchMove = function searchMove(select, data) {
   var moveNumber = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
   var teamID = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
   var searchString = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "";
-  if (!data.moves || !select) return; //return if it won't work
-  //grabs all the moves that fit with the filter string
+  var ref = arguments.length > 5 ? arguments[5] : undefined;
+  if (!data.moves || !select) return []; //return if it won't work
+  //check if the choice exists in the filter
+
+  var choiceExistsCheck = false; //grabs all the moves that fit with the filter string
 
   var results = data.moves.map(function (move, index) {
     return {
@@ -454,58 +637,53 @@ var searchMove = function searchMove(select, data) {
 
     };
   }).filter(function (object) {
-    return object.name.includes(searchString);
-  }); //filters out to be only the ones searched for
-
-  if (results.length > 0) {
-    //adds each option to the select list
-    select.innerHTML = ""; //option to pick nothing
-
-    var defOption = document.createElement("option");
-    defOption.value = "";
-    defOption.textContent = "None";
-    select.append(defOption);
-
-    for (var i = 0; i < results.length; i++) {
-      var option = document.createElement("option");
-      option.value = results[i].id;
-      option.textContent = results[i].name;
-      select.append(option);
-    } //set up onchange event for the select list
+    if (object.name.includes(searchString)) {
+      //check if this is the selected move
+      if (currentSpecies.selections.moveValues[moveNumber] == object.id) {
+        choiceExistsCheck = true;
+      } //return true
 
 
-    select.onchange = function (e) {
-      //changes the move and move text
-      var moveChoice = e.target.value;
-      var moveText = e.target.options[e.target.selectedIndex].text;
-      currentSpecies.selections.moveValues[moveNumber] = moveChoice;
-      currentTeam.members[teamID].moveValues[moveNumber] = moveChoice;
-      currentSpecies.selections.moves[moveNumber] = moveText;
-      currentTeam.members[teamID].moves[moveNumber] = moveText;
-    }; //if there's a selected move in this slot, set the value (won't do anything if the selection isn't one of the options)
-
-
-    if (currentSpecies.selections.moveValues[moveNumber] || currentSpecies.selections.moveValues[moveNumber] === 0) {
-      select.value = currentSpecies.selections.moveValues[moveNumber];
+      return true;
     }
-  } else {
-    //don't have an onchange if it's null
-    select.innerHTML = "";
 
-    var _option2 = document.createElement("option");
+    return false; //otherwise false
+  }); //filters out to be only the ones searched for
+  //sets the state for the reference
 
-    _option2.value = "";
-    _option2.textContent = "No Results Found";
-    select.append(_option2);
-    select.value = "";
-    select.onchange = null;
-  }
+  ref.current.handleResults(results, function () {
+    //this is a callback so it happens after the options are made (since it sets the value)
+    if (results.length > 0) {
+      //set up onchange event for the select list
+      select.onchange = function (e) {
+        //changes the move and move text
+        var moveChoice = e.target.value;
+        var moveText = e.target.options[e.target.selectedIndex].text;
+        currentSpecies.selections.moveValues[moveNumber] = moveChoice;
+        currentTeam.members[teamID].moveValues[moveNumber] = moveChoice;
+        currentSpecies.selections.moves[moveNumber] = moveText;
+        currentTeam.members[teamID].moves[moveNumber] = moveText;
+      }; //if there's a selected move in this slot, set the value
+
+
+      if (choiceExistsCheck) {
+        select.value = currentSpecies.selections.moveValues[moveNumber];
+      } else {
+        select.value = "";
+      }
+    } else {
+      select.value = "";
+      select.onchange = null;
+    }
+  });
 };
 
 var saveTeam = function saveTeam(e) {
   var dataLoaded = function dataLoaded(e) {
     //This will essentially 'exit' the team editing page once it's done.
-    document.querySelector("#teams").innerHTML = "Loading...";
+    ReactDOM.render( /*#__PURE__*/React.createElement(TeamList, {
+      teams: []
+    }), document.querySelector("#teams"));
     loadTeamsFromServer();
   }; //creates the data and sends it
 

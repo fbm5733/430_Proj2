@@ -8,14 +8,7 @@ const { Team } = models;
 const P = new Pokedex();
 
 const makerPage = (req, res) => {
-  Team.TeamModel.findByOwner(req.session.account._id, (err, docs) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).json({ error: 'An error occurred' });
-    }
-
-    return res.render('app', { csrfToken: req.csrfToken(), teams: docs });
-  });
+    return res.render('app');
 };
 
 const makeTeam = (req, res) => {
@@ -116,7 +109,8 @@ const getTeamDetails = (request, response) => {
           const newMember = {};
 
           newMember.name = res.name; // sets the name
-          newMember.image = res.sprites.other['official-artwork'].front_default || res.sprites.front_default || "/assets/img/transparent.gif"; // sets the image with defaults in case
+          newMember.image = res.sprites.other['official-artwork'].front_default
+              || res.sprites.front_default || '/assets/img/transparent.gif'; // sets the image with defaults in case
           if (member.ability || member.ability === 0) {
             newMember.ability = res.abilities[member.ability].ability.name; // sets the ability
           } else {
