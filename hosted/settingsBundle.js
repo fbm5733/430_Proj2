@@ -2,8 +2,8 @@
 
 var handlePassChange = function handlePassChange(e) {
   e.preventDefault();
-  $("#teamMessage").animate({
-    width: 'hide'
+  $("#porygonMessage").animate({
+    right: -250
   }, 350);
 
   if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
@@ -102,14 +102,14 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#teamMessage").animate({
-    width: 'toggle'
+  $("#porygonMessage").animate({
+    right: 100
   }, 350);
 };
 
 var redirect = function redirect(response) {
-  $("#teamMessage").animate({
-    width: 'hide'
+  $("#porygonMessage").animate({
+    right: -250
   }, 350);
   window.location = response.redirect;
 };

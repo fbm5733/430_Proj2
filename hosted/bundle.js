@@ -27,8 +27,8 @@ var currentSpecies = {};
 var detailsRef; //makes a new team
 
 var newTeam = function newTeam(e) {
-  $("#teamMessage").animate({
-    width: 'hide'
+  $("#porygonMessage").animate({
+    right: -250
   }, 350);
   sendAjax('POST', '/maker', {
     "new": "true",
@@ -93,13 +93,19 @@ var TeamList = function TeamList(props) {
     }
 
     ;
+
+    function handleStartEdit() {
+      $("#porygonMessage").animate({
+        right: -250
+      }, 350);
+      sendAjax('GET', "/getTeamDetails?_id=".concat(team._id), null, setupTeamCreateScreen);
+    }
+
     return /*#__PURE__*/React.createElement("div", {
       key: team._id,
       id: "t".concat(team._id),
       className: "team",
-      onClick: function onClick() {
-        sendAjax('GET', "/getTeamDetails?_id=".concat(team._id), null, setupTeamCreateScreen);
-      }
+      onClick: handleStartEdit
     }, /*#__PURE__*/React.createElement("h2", {
       className: "teamName"
     }, " ", team.name, " "), /*#__PURE__*/React.createElement("div", {
@@ -191,6 +197,9 @@ var TeamCreateScreen = function TeamCreateScreen(props) {
     var childSpecies = React.createRef(); //sends the reference up so they can be changed later
 
     function startEditMember(e) {
+      $("#porygonMessage").animate({
+        right: -250
+      }, 350);
       editMember(e, childSpecies);
     } //pushes it with the SpeciesImageName component
 
@@ -743,8 +752,11 @@ var saveTeam = function saveTeam(e) {
     }), document.querySelector("#teams"));
     detailsRef = null;
     loadTeamsFromServer();
-  }; //creates the data and sends it
+  };
 
+  $("#porygonMessage").animate({
+    right: -250
+  }, 350); //creates the data and sends it
 
   var jsonData = {
     name: currentTeam.name,
@@ -848,14 +860,14 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#teamMessage").animate({
-    width: 'toggle'
+  $("#porygonMessage").animate({
+    right: 100
   }, 350);
 };
 
 var redirect = function redirect(response) {
-  $("#teamMessage").animate({
-    width: 'hide'
+  $("#porygonMessage").animate({
+    right: -250
   }, 350);
   window.location = response.redirect;
 };

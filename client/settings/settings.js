@@ -1,7 +1,7 @@
 const handlePassChange = (e) => {
     e.preventDefault();
 
-    $("#teamMessage").animate({width:'hide'},350);
+    $("#porygonMessage").animate({right:-250},350);
 
     if($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
         handleError("RAWR! Username or password is empty");

@@ -4,7 +4,7 @@ let detailsRef;
 
 //makes a new team
 const newTeam = (e) => {
-    $("#teamMessage").animate({width:'hide'},350);
+    $("#porygonMessage").animate({right:-250},350);
     
     sendAjax( 'POST', '/maker', { new: "true", name: "New Team", _csrf: document.querySelector('#csrf').value }, function(data) {
         //checks if you need to redirect
@@ -64,8 +64,13 @@ const TeamList = function(props) {
             e.stopPropagation();
         };
 
+        function handleStartEdit() { 
+            $("#porygonMessage").animate({right:-250},350); 
+            sendAjax('GET', `/getTeamDetails?_id=${team._id}`, null, setupTeamCreateScreen); 
+        }
+
         return (
-            <div key={team._id} id={`t${team._id}`} className="team" onClick = {() => { sendAjax('GET', `/getTeamDetails?_id=${team._id}`, null, setupTeamCreateScreen); }}>
+            <div key={team._id} id={`t${team._id}`} className="team" onClick = {handleStartEdit}>
                 <h2 className="teamName"> {team.name} </h2>
                 <div className="innerTeam"> 
                     {memberNodes} 
@@ -155,6 +160,7 @@ const TeamCreateScreen = function(props) {
 
         //sends the reference up so they can be changed later
         function startEditMember(e) {
+            $("#porygonMessage").animate({right:-250},350);
             editMember(e, childSpecies);
         }
 
@@ -631,6 +637,8 @@ const saveTeam = (e) => {
         detailsRef = null;
         loadTeamsFromServer();
     };
+
+    $("#porygonMessage").animate({right:-250},350);
 
     //creates the data and sends it
     const jsonData = {

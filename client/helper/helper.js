@@ -1,10 +1,10 @@
 const handleError = (message) => {
     $("#errorMessage").text(message); 
-    $("#teamMessage").animate({width:'toggle'},350); 
+    $("#porygonMessage").animate({right:100},350); 
 }; 
     
 const redirect = (response) => { 
-    $("#teamMessage").animate({width:'hide'}, 350);
+    $("#porygonMessage").animate({right: -250}, 350);
     window.location = response.redirect; 
 };
 
