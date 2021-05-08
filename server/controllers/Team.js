@@ -11,7 +11,7 @@ const makerPage = (req, res) => res.render('app');
 
 const makeTeam = (req, res) => {
   // defaults to false - only changed when you click the share link
-  const sharable = req.body.sharable || 'false';
+  const sharable = 'false';
   // defaults for everything else
   const name = req.body.name || 'New Team';
   const members = req.body.members || [];
@@ -23,31 +23,49 @@ const makeTeam = (req, res) => {
     owner: req.session.account._id,
   };
 
-  let newTeam;
+  // callback is needed since we MIGHT check if the team is sharable
+  function callback(newTeam) {
+    // saves the team
+    const teamPromise = newTeam.save();
+
+    // send back empty json
+    teamPromise.then(() => {
+      res.json({});
+    });
+
+    teamPromise.catch((err) => {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }); // catch
+
+    return teamPromise;
+  }
 
   // sets the id so it will save instead of making new
   if (req.body._id) {
+    // sets the id
     teamData._id = req.body._id;
-    newTeam = new Team.TeamModel(teamData);
-    newTeam.isNew = false; // tells mongoose this is an old thing to save
+    // sets the sharable value to what is currently stored - so you cannot manually change it
+    Team.TeamModel.findById(teamData._id, (err, doc) => {
+      // if it isn't sharable or it's a bad ID then don't show it
+      if (err) {
+        console.log(err);
+        return res.json({ error: 'An error occurred' });
+      }
+      // sets the sharable value
+      teamData.sharable = doc.sharable || 'false';
+
+      const newTeam = new Team.TeamModel(teamData);
+      newTeam.isNew = false; // tells mongoose this is an old thing to save
+
+      return callback(newTeam);
+    });
   } else {
-    newTeam = new Team.TeamModel(teamData);
+    const newTeam = new Team.TeamModel(teamData);
+    // just calls the callback manually, we don't need to check anything
+    return callback(newTeam);
   }
-
-  // saves the team
-  const teamPromise = newTeam.save();
-
-  // send back empty json
-  teamPromise.then(() => {
-    res.json({});
-  });
-
-  teamPromise.catch((err) => {
-    console.log(err);
-    return res.status(400).json({ error: 'An error occurred' });
-  }); // catch
-
-  return teamPromise;
+  return false;
 }; // makeTeam
 
 const getTeams = (request, response) => {
