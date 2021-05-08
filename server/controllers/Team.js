@@ -30,7 +30,7 @@ const makeTeam = (req, res) => {
 
     // send back empty json
     teamPromise.then(() => {
-      res.json({});
+      res.json({ newTeam });
     });
 
     teamPromise.catch((err) => {
